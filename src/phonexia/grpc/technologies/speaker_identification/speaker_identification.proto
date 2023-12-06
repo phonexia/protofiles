@@ -1,0 +1,88 @@
+// Copyright 2023 Phonexia s.r.o.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Phonexia Speaker Identification gRPC API.
+syntax = "proto3";
+
+package phonexia.grpc.technologies.speaker_identification.v1;
+
+import "phonexia/grpc/common/core.proto";
+import "google/protobuf/duration.proto";
+
+// Service that implements voiceprint comparison.
+service VoiceprintComparison {
+  // Performs synchronous comparison of two voiceprint lists. Each voiceprint
+  // from one list is compared with each voiceprint from other list. Returns a
+  // message containing matrix of comparison scores (results of individual
+  // voiceprint-to-voiceprint comparisons).
+  rpc Compare(stream CompareRequest) returns (stream CompareResponse);
+}
+
+// Service that implements voiceprint extraction.
+service VoiceprintExtraction {
+  // Performs synchronous voiceprint extraction from an audio. Returns a
+  // result after completely sent and processed audio.
+  rpc Extract(stream ExtractRequest) returns (ExtractResponse);
+}
+
+// The message sent by the client for the <code>Compare</code> method.
+message CompareRequest {
+  // First list of voiceprints to be compared.
+  repeated phonexia.grpc.common.Voiceprint voiceprints_a = 1;
+
+  // Second list of voiceprints to be compared.
+  repeated phonexia.grpc.common.Voiceprint voiceprints_b = 2;
+}
+
+// The top-level message returned to the client by the <code>Compare</code>
+// method. It contains comparison matrix of log-likelihood ratio (LLR) scores.
+message CompareResponse {
+  // Comparison matrix containing similarity scores between
+  // <code>voiceprints_a</code> and <code>voiceprints_b</code>. The element at
+  // row <code>i</code> and column <code>j</code> corresponds to the comparison
+  // result between <code>voiceprints_a[i]</code> and
+  // <code>voiceprints_b[j]</code>.
+
+  // The similarity scores are expressed as log-likelihood ratio (LLR) values,
+  // which fall within the interval of <code>(-inf;+inf)</code>, with higher
+  // values indicating higher similarity.
+  phonexia.grpc.common.Matrix scores = 1;
+}
+
+// The top-level message sent by the client for the <code>Extract</code> method.
+message ExtractRequest {
+  // Audio to extract voiceprints from.
+  phonexia.grpc.common.Audio audio = 1;
+}
+
+// A voiceprint extraction result.
+message ExtractResult {
+  // Speech length from which the voiceprint was extracted.
+  google.protobuf.Duration speech_length = 1;
+
+  // Extracted voiceprint.
+  phonexia.grpc.common.Voiceprint voiceprint = 2;
+}
+
+// The top-level message returned to the client by the <code>Extract</code>
+// method. It contains the result as zero or more <code>ExtractResult</code>
+// messages.
+message ExtractResponse {
+  // Result containing the extracted voiceprint.
+  ExtractResult result = 1;
+
+  // When available, total length of the processed audio.
+  // Set only if this is the last response in the stream.
+  google.protobuf.Duration processed_audio_length = 2;
+}
