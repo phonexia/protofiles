@@ -1,0 +1,52 @@
+// Copyright 2023 Phonexia s.r.o.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Phonexia common message definitions for gRPC API.
+syntax = "proto3";
+
+package phonexia.grpc.common;
+
+//  Contains audio data in the supported format and encoding.
+//  Supported formats are <code>WAV</code> (various encoding), <code>FLAC</code>
+//  and <code>OGG_OPUS</code>. For best results, the audio source should be
+//  captured and transmitted using a lossless encoding (<code>FLAC</code> or
+//  <code>LINEAR16</code>). The accuracy of the speech technologies can be
+//  reduced if lossy codecs are used to capture or transmit audio, particularly
+//  if background noise is present. Lossy codecs include <code>ALAW</code>,
+// <code>MULAW</code> or <code>OGG_OPUS</code>.
+message Audio {
+  // The audio data bytes encoded in the supported format, including the header.
+  // <em>Note: as with all bytes fields, proto buffers use a pure binary
+  // representation.</em>
+  bytes content = 1;
+}
+
+// Represents the result from voiceprint extraction.
+message Voiceprint {
+  // Voiceprint data bytes encoded in UBJSON format.
+  bytes content = 1;
+}
+
+// Data type representing matrix of values. The matrix is represented as a
+// linear array in row major format.
+message Matrix {
+  // Number of rows in the matrix.
+  uint64 rows_count = 1;
+
+  // Number of columns in the matrix.
+  uint64 columns_count = 2;
+
+  // Sequential list of matrix values in row major format.
+  repeated float values = 3;
+}
