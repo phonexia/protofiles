@@ -1,0 +1,4 @@
+include:
+  - project: phonexia/dev/technologies/microservices/ci-templates
+    file:
+      - /templates/protofiles-public/doc.yml
