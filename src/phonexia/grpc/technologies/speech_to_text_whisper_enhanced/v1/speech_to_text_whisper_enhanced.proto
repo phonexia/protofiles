@@ -1,4 +1,4 @@
-// Copyright 2023 Phonexia s.r.o.
+// Copyright 2024 Phonexia s.r.o.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -46,18 +46,16 @@ message TranscribeRequest {
 }
 
 message TranscribeConfig {
-  // Language of the audio data.
-  // The language is specified as a ISO-639-1 language tag.
-  // If not set, the language will be detected automatically
+  // The language of the audio data specified as an ISO-639-1 language tag.
+  // If not set, the language will be detected automatically.
   string language = 1;
 }
 
 // The top-level message returned to the client by the <code>Transcribe</code>
 // method. It contains segments with transcription results.
 message TranscribeResponse {
-  // Sequential list of transcription segments corresponding to sequential
-  // portions of audio.
-  repeated Segment segments = 1;
+  // The Speech to Text transcription result.
+  TranscribeResult result = 1;
 
   // Total length of the processed audio.
   // Set only if this is the last response in the stream.
@@ -72,12 +70,25 @@ message ListSupportedLanguagesRequest {}
 // <code>ListSupportedLanguages</code>
 message ListSupportedLanguagesResponse {
   // List of supported languages.
-  // The language is specified as a ISO-639-1 language tag.
+  // The language is specified as an ISO-639-1 language tag.
   repeated string languages = 1;
 }
 
-// Segment of the transcription result.
-message Segment {
+// The collection of all transcription result formats.
+message TranscribeResult {
+  // Result in one-best format.
+  OneBest one_best = 1;
+}
+
+// The one-best output from Speech To Text.
+message OneBest {
+  // Sequential list of transcription segments corresponding to sequential
+  // portions of audio.
+  repeated OneBestSegment segments = 1;
+}
+
+// Segment of the one-best output.
+message OneBestSegment {
   // Text content of the segment.
   string text = 1;
 
@@ -88,7 +99,9 @@ message Segment {
   google.protobuf.Duration end_time = 3;
 
   // Detected language of the segment.
-  // The language is specified as a ISO-639-1 language tag.
-  // If the language was forced in the request, the language will be the same
+  // The language is specified as an ISO-639-1 language tag.
+  //
+  // Note: If a specific language was enforced in the request, the detected
+  // language is the same as the specified language.
   string language = 4;
 }
