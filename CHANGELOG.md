@@ -1,6 +1,6 @@
 # Phonexia gRPC application interface
 
-## 1.1.0 (unreleased)
+## 1.1.0 (2024-01-17)
 ### Added
 - Interface for `speech to text whisper enhanced` in `src/phonexia/grpc/technologies/speech_to_text_whisper_enhanced/v1/speech_to_text_whisper_enhanced.proto`
 
