@@ -1,0 +1,107 @@
+// Copyright 2024 Phonexia s.r.o.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Phonexia Speech To Text Whisper Enhanced gRPC API.
+syntax = "proto3";
+
+package phonexia.grpc.technologies.speech_to_text_whisper_enhanced.v1;
+
+import "phonexia/grpc/common/core.proto";
+import "google/protobuf/duration.proto";
+
+// Service implementing speech-to-text transcription.
+service SpeechToText {
+  // Performs synchronous speech-to-text transcription. Receives results while
+  // the audio is being transcribed. The transcription starts after the whole
+  // audio has been received.
+  rpc Transcribe(stream TranscribeRequest) returns (stream TranscribeResponse);
+
+  // Method to retrieve supported languages.
+  // Models can be monolingual or multilingual.
+  rpc ListSupportedLanguages(ListSupportedLanguagesRequest)
+      returns (ListSupportedLanguagesResponse);
+}
+
+// The top-level message sent by the client for the <code>Transcribe</code>
+// method.
+message TranscribeRequest {
+  // Audio data from which a transcription should be extracted.
+  // A variety of common audio formats are supported, including WAV, MP3, FLAC,
+  // and others.
+  phonexia.grpc.common.Audio audio = 1;
+
+  // Speech to text transcription configuration.
+  TranscribeConfig config = 2;
+}
+
+message TranscribeConfig {
+  // The language of the audio data specified as an ISO-639-1 language tag.
+  // If not set, the language will be detected automatically.
+  string language = 1;
+}
+
+// The top-level message returned to the client by the <code>Transcribe</code>
+// method. It contains segments with transcription results.
+message TranscribeResponse {
+  // The Speech to Text transcription result.
+  TranscribeResult result = 1;
+
+  // Total length of the processed audio.
+  // Set only if this is the last response in the stream.
+  google.protobuf.Duration processed_audio_length = 2;
+}
+
+// The top-level message sent by the client for the
+// <code>ListSupportedLanguages</code> method.
+message ListSupportedLanguagesRequest {}
+
+// The top-level message returned to the client by the
+// <code>ListSupportedLanguages</code>
+message ListSupportedLanguagesResponse {
+  // List of supported languages.
+  // The language is specified as an ISO-639-1 language tag.
+  repeated string languages = 1;
+}
+
+// The collection of all transcription result formats.
+message TranscribeResult {
+  // Result in one-best format.
+  OneBest one_best = 1;
+}
+
+// The one-best output from Speech To Text.
+message OneBest {
+  // Sequential list of transcription segments corresponding to sequential
+  // portions of audio.
+  repeated OneBestSegment segments = 1;
+}
+
+// Segment of the one-best output.
+message OneBestSegment {
+  // Text content of the segment.
+  string text = 1;
+
+  // Start time of the segment.
+  google.protobuf.Duration start_time = 2;
+
+  // End time of the segment.
+  google.protobuf.Duration end_time = 3;
+
+  // Detected language of the segment.
+  // The language is specified as an ISO-639-1 language tag.
+  //
+  // Note: If a specific language was enforced in the request, the detected
+  // language is the same as the specified language.
+  string language = 4;
+}
