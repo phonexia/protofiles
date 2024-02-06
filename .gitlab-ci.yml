@@ -5,5 +5,5 @@ include:
       - /templates/renovate.yml
       - /templates/protofiles-public/doc.yml
       - /templates/protofiles-public/build.yml
-      - /templates/protofiles-public/publish-pypi.yml
+      - /templates/protofiles-public/publish.yml
 
