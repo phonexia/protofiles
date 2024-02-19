@@ -17,6 +17,8 @@ syntax = "proto3";
 
 package phonexia.grpc.common;
 
+import "google/protobuf/duration.proto";
+
 //  Contains audio data in the supported format and encoding.
 //  Supported formats are <code>WAV</code> (various encoding), <code>FLAC</code>
 //  and <code>OGG_OPUS</code>. For best results, the audio source should be
@@ -30,6 +32,12 @@ message Audio {
   // <em>Note: as with all bytes fields, proto buffers use a pure binary
   // representation.</em>
   bytes content = 1;
+
+  // Time range of the audio to process. If omitted, the
+  // whole audio is processed. If <code>start</code> is omitted, the
+  // audio is process from the beginning. If <code>end</code> is omitted,
+  // the audio is processed to the end.
+  TimeRange time_range = 2;
 }
 
 // Represents the result from voiceprint extraction.
@@ -49,4 +57,13 @@ message Matrix {
 
   // Sequential list of matrix values in row major format.
   repeated float values = 3;
+}
+
+// Data type representing time range.
+message TimeRange {
+  // Start time of the time range.
+  google.protobuf.Duration start = 1;
+
+  // End time of the time range.
+  google.protobuf.Duration end = 2;
 }
