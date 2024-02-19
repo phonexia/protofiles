@@ -49,6 +49,15 @@ message TranscribeConfig {
   // The language of the audio data specified as an ISO-639-1 language tag.
   // If not set, the language will be detected automatically.
   string language = 1;
+
+  // By default, the language of the speech is detected once at the beginning of
+  // the recording. Enabling this option allows for dynamic language switching
+  // in the recording, with the language being detected approximately every 30
+  // seconds.
+  //
+  // Note: This option is ignored if the language is enforced by setting the
+  // <code>language</code> option.
+  bool enable_language_switching = 2;
 }
 
 // The top-level message returned to the client by the <code>Transcribe</code>
