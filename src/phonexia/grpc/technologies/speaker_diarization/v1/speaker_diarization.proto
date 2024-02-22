@@ -1,0 +1,74 @@
+// Copyright 2024 Phonexia s.r.o.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Phonexia Speaker Diarization gRPC API
+syntax = "proto3";
+
+package phonexia.grpc.technologies.speaker_diarization.v1;
+
+import "phonexia/grpc/common/core.proto";
+import "google/protobuf/duration.proto";
+
+// Service implementing speaker diarization.
+service SpeakerDiarization {
+  // Performs synchronous speaker diarization of an audio. Returns a result
+  // after completely sent and processed audio.
+  rpc Diarize(stream DiarizeRequest) returns (DiarizeResponse);
+}
+
+// The top-level message sent by the client for the <code>Diarize</code> method.
+message DiarizeRequest {
+  // Audio to be diarized.
+  phonexia.grpc.common.Audio audio = 1;
+
+  // Speaker diarization configuration.
+  DiarizeConfig config = 2;
+}
+
+message DiarizeConfig {
+  // Upper limit for the number of speakers in the audio.
+  // The value must be larger than 0.
+  // If omitted, the default value is set to 100.
+  int32 max_speakers = 1;
+
+  // Enforces exact number of speakers in the audio. If set, it overwrites
+  // <code>max_speakers</code>. If not set, the number of speakers
+  // is detected automatically, with upper limit defined by
+  // <code>max_speakers</code>.
+  optional int32 total_speakers = 2;
+}
+
+// The top-level message returned to the client by the <code>Diarize</code>
+// method.
+message DiarizeResponse {
+  // Detected number of speakers in the audio.
+  int32 speakers_count = 1;
+
+  // List of detected segments in the audio.
+  repeated Segment segments = 2;
+
+  // Total length of the processed audio.
+  google.protobuf.Duration processed_audio_length = 3;
+}
+
+message Segment {
+  // Identifier of a speaker in the segment.
+  int32 speaker_id = 1;
+
+  // Start time of the segment.
+  google.protobuf.Duration start_time = 2;
+
+  // End time of the segment.
+  google.protobuf.Duration end_time = 3;
+}

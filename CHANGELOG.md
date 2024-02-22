@@ -1,5 +1,9 @@
 # Phonexia gRPC application interface
 
+## 1.3.0 (2024-02-22)
+### Added
+- Interface for `speaker diarization` in `phonexia.grpc.technologies.speaker_diarization.v1`
+
 ## 1.2.0 (2024-02-19)
 ### Added
 - `Audio.time_range` parameter in `phonexia.grpc.common` to specify `start`/`end` times from/to which to process the audio
