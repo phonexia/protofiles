@@ -40,7 +40,7 @@ class PhonexiaGrpcProtobuf(ConanFile):
         cmake.build()
 
     def requirements(self):
-        self.requires("grpc/1.50.1")
+        self.requires("grpc/1.54.3")
 
     def package(self):
         cmake = self.configure_cmake()
