@@ -1,5 +1,9 @@
 # Phonexia gRPC application interface
 
+## 1.3.0 (2024-02-29)
+### Added
+- `ExtractConfig.speech_length` parameter in `phonexia.grpc.technologies.speaker_identification.v1` to specify the maximum speech length from which the voiceprint will be extracted.
+
 ## 1.3.0 (2024-02-22)
 ### Added
 - Interface for `speaker diarization` in `phonexia.grpc.technologies.speaker_diarization.v1`
