@@ -64,6 +64,16 @@ message CompareResponse {
 message ExtractRequest {
   // Audio to extract voiceprints from.
   phonexia.grpc.common.Audio audio = 1;
+
+  // Voiceprint extraction configuration.
+  ExtractConfig config = 2;
+}
+
+message ExtractConfig {
+  // Specifies the maximum speech length from which the voiceprint will be
+  // extracted. If there is less speech in the recording than the specified
+  // duration, the voiceprint will be extracted from the entire recording.
+  google.protobuf.Duration speech_length = 1;
 }
 
 // A voiceprint extraction result.

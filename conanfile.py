@@ -41,6 +41,7 @@ class PhonexiaGrpcProtobuf(ConanFile):
 
     def requirements(self):
         self.requires("grpc/1.54.3")
+        self.requires("googleapis/cci.20230501")
 
     def package(self):
         cmake = self.configure_cmake()
