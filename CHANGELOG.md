@@ -1,5 +1,9 @@
 # Phonexia gRPC application interface
 
+## 1.5.0 (2024-03-27)
+### Added
+- Interface for `gender identification` in `phonexia.grpc.technologies.gender_identification.v1`
+
 ## 1.4.0 (2024-02-29)
 ### Added
 - `ExtractConfig.speech_length` parameter in `phonexia.grpc.technologies.speaker_identification.v1` to specify the maximum speech length from which the voiceprint will be extracted.
