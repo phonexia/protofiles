@@ -1,0 +1,189 @@
+// Copyright 2024 Phonexia s.r.o.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Phonexia Enhanced Speech To Text Built On Whisper gRPC API.
+syntax = "proto3";
+
+package phonexia.grpc.technologies.enhanced_speech_to_text_built_on_whisper.v1;
+
+import "phonexia/grpc/common/core.proto";
+import "google/protobuf/duration.proto";
+
+// Service implementing speech-to-text transcription.
+service SpeechToText {
+  // Performs synchronous speech-to-text transcription. The transcription starts
+  // after the whole audio has been received.
+  rpc Transcribe(stream TranscribeRequest) returns (stream TranscribeResponse);
+
+  // Performs synchronous speech-to-text translation. The translation starts
+  // after the whole audio has been received. Currently, the target language is limited
+  // to English only. The set of available source languages can be found by invoking
+  // the <code>ListSupportedLanguages</code> method.
+  rpc Translate(stream TranslateRequest) returns (stream TranslateResponse);
+
+  // Method to retrieve supported languages for transcription/translation.
+  // Models can be monolingual or multilingual. Multilingual models may be
+  // licensed to only a subset of all supported languages, in which case this
+  // method returns this limited subset.
+  rpc ListSupportedLanguages(ListSupportedLanguagesRequest) returns (ListSupportedLanguagesResponse);
+}
+
+// The top-level message sent by the client for the <code>Transcribe</code>
+// method.
+message TranscribeRequest {
+  // Audio data from which a transcription should be extracted.
+  // A variety of common audio formats are supported, including WAV, FLAC,
+  // and others.
+  phonexia.grpc.common.Audio audio = 1;
+
+  // Speech to text transcription configuration.
+  TranscribeConfig config = 2;
+}
+
+message TranscribeConfig {
+  // The language of the audio data specified as an RFC 5646 language tag.
+  // If not set, the language will be detected automatically.
+  string language = 1;
+
+  // By default, the language of the speech is detected once at the beginning of
+  // the audio. Setting `enable_language_switching` to `true` allows for dynamic
+  // language switching in the audio, with the language being detected
+  // approximately every 30 seconds.
+  //
+  // Note: This option is ignored if the language is enforced by setting the
+  // <code>language</code> option.
+  bool enable_language_switching = 2;
+}
+
+// The top-level message sent by the client for the <code>Translate</code>
+// method.
+message TranslateRequest {
+  // Audio data on which the translation should be performed.
+  // A variety of common audio formats are supported, including WAV, FLAC,
+  // and others.
+  phonexia.grpc.common.Audio audio = 1;
+
+  // Speech to text translation configuration.
+  TranslateConfig config = 2;
+}
+
+message TranslateConfig {
+  // The language of the audio data specified as an RFC 5646 language tag.
+  // If not set, the language will be detected automatically.
+  string source_language = 1;
+
+  // By default, the language of the speech is detected once at the beginning of
+  // the audio. Setting `enable_language_switching` to `true` allows for dynamic
+  // language switching in the audio, with the language being detected
+  // approximately every 30 seconds.
+  //
+  // Note: This option is ignored if the language is enforced by setting the
+  // <code>source_language</code> option.
+  bool enable_language_switching = 2;
+}
+
+// The top-level message returned to the client by the <code>Transcribe</code>
+// method.
+message TranscribeResponse {
+  // The Speech to Text transcription result.
+  TranscribeResult result = 1;
+
+  // Total length of the processed audio.
+  // Set only if this is the last response in the stream.
+  google.protobuf.Duration processed_audio_length = 2;
+}
+
+// The top-level message returned to the client by the <code>Translate</code>
+// method.
+message TranslateResponse {
+  // The Speech to Text translation result.
+  TranslateResult result = 1;
+
+  // Total length of the processed audio.
+  // Set only if this is the last response in the stream.
+  google.protobuf.Duration processed_audio_length = 2;
+}
+
+// The top-level message sent by the client for the <code>ListSupportedLanguages</code> method.
+message ListSupportedLanguagesRequest {
+}
+
+// The top-level message returned to the client by the <code>ListSupportedLanguages</code>
+message ListSupportedLanguagesResponse {
+  // List of available languages for transcription.
+  // The language is specified as an RFC 5646 language tag.
+  repeated string languages = 1;
+
+  // List of available source languages for translation.
+  // The language is specified as an RFC 5646 language tag.
+  repeated string translation_languages = 2;
+}
+
+// The collection of all transcription result formats.
+message TranscribeResult {
+  // Result in one-best format.
+  OneBest one_best = 1;
+}
+
+// The collection of all translation result formats.
+message TranslateResult {
+  // Result in one-best format.
+  OneBest one_best = 1;
+}
+
+// The one-best output from Speech To Text.
+message OneBest {
+  // Sequential list of transcription segments corresponding to sequential
+  // portions of audio.
+  repeated OneBestSegment segments = 1;
+}
+
+// Segment of the one-best output.
+message OneBestSegment {
+  // Text content of the segment.
+  string text = 1;
+
+  // Start time of the segment.
+  google.protobuf.Duration start_time = 2;
+
+  // End time of the segment.
+  google.protobuf.Duration end_time = 3;
+
+  // Target language, that the <code>text</code> field of this message is transcribed in.
+  // The language is specified as an RFC 5646 language tag.
+  //
+  // Note: If a specific language was enforced in the <code>Transcribe</code> method,
+  // the target language is the same as this specified language.
+  string language = 4;
+
+  // The selected language of the audio data as an RFC 5646 language tag.
+  // This field contains the language that whisper used for transcription/translation.
+  // In case that the user does not have a license for the language identified in the
+  // audio data, this field may not contain this language. Rather it will contain the most probable
+  // of the licensed languages.
+  // Note that this will have radical influence on the output, so always compare this field
+  // against <code>detected_source_language</code> to know if the text is transcribed/translated
+  // to/from the correct language.
+  //
+  // Note: If a specific <code>source_language</code> was enforced in the config,
+  // this field is the same as that specified language.
+  string source_language = 5;
+  
+  // The detected language of the audio data as an RFC 5646 language tag.
+  // This field contains the language that whisper detected as the source language of the audio data.
+  // This field may not equal to <code>source_language</code> in case the audio data is in different
+  // language than from the set of licensed languages.
+  // Always check if this field is equal to <code>source_language</code>.
+  string detected_source_language = 6;
+}

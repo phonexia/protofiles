@@ -1,5 +1,12 @@
 # Phonexia gRPC application interface
 
+## 2.0.0 (2024-04-25)
+### Changed
+- Renamed `speech_to_text_whisper_enhanced` to `enhanced_speech_to_text_built_on_whisper`
+### Added
+- `SpeechToText.Translate` rpc for machine translation
+- `SpeechToText.ListSupportedLanguages` now also lists languages for translation
+
 ## 1.5.0 (2024-03-27)
 ### Added
 - Interface for `gender identification` in `phonexia.grpc.technologies.gender_identification.v1`
