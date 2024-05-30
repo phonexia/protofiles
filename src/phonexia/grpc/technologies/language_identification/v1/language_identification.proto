@@ -1,0 +1,121 @@
+// Copyright 2024 Phonexia s.r.o.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Phonexia Language Identification gRPC API.
+syntax = "proto3";
+
+package phonexia.grpc.technologies.language_identification.v1;
+
+import "phonexia/grpc/common/core.proto";
+import "google/protobuf/duration.proto";
+
+// Service implementing language identification.
+service LanguageIdentification {
+  // Performs language identification on the given audio.
+  // Returns list of scores for each supported language.
+  // Languages are identified by the RFC 5646 language codes.
+  rpc Identify(stream IdentifyRequest) returns (IdentifyResponse);
+
+  // Retrieve supported languages available to identify in the input.
+  // This method will return a list of supported languages as RFC 5646 language codes.
+  rpc ListSupportedLanguages(ListSupportedLanguagesRequest) returns (ListSupportedLanguagesResponse);
+}
+
+// The top level message sent by the client for the <code>Identify</code> method.
+message IdentifyRequest {
+  // Audio data to be identified.
+  phonexia.grpc.common.Audio audio = 1;
+
+  // Configuration for the language identification.
+  IdentifyConfig config = 2;
+}
+
+// The top level message returned to the client by the <code>Identify</code> method.
+message IdentifyResponse {
+  // Result of language identification.
+  LanguageIdentificationResult result = 1;
+
+  // When available, total length of the processed audio.
+  // Set only if this is the last response in the stream.
+  google.protobuf.Duration processed_audio_length = 2;
+}
+
+// The top-level message sent by the client for the <code>ListSupportedLanguages</code> method.
+message ListSupportedLanguagesRequest {
+}
+
+// The top-level message returned to the client by the <code>ListSupportedLanguages</code>.
+message ListSupportedLanguagesResponse {
+  // List of supported languages.
+  repeated string supported_languages = 1;
+}
+
+message IdentifyConfig {
+  // Specifies the maximum speech length from which the languages will be
+  // identified. If there is less speech in the audio than the specified
+  // duration, the languages will be identified from the entire audio.
+  google.protobuf.Duration speech_length = 1;
+
+  // Specify which languages can be used for language identification.
+  // Choose only from list of supported languages, which can be retrieved at <code>ListSuportedlanguages</code>.
+  // Choosing desired languages is profficient to better identify a smaller group of languages since probability will be distributed only on selected languages.
+  // Leaving this field empty is the same as selecting every supported language.
+  repeated Language languages = 2;
+
+  // Create custom groups of languages and assign them common identifier.
+  // Defining group produces score for the individual languages as well as for the group.
+  // One of the use cases for using groups may be grouping individual language dialects into one encapsulating group.  
+  // Languages in multiple clusters mustn't intersect. Meaning one language cannot be in multiple clusters at the same time.
+  repeated LanguageGroup groups = 3;
+}
+
+// Message for selecting specific language.
+message Language {
+  // Language code in RFC 5646 format.
+  string language_code = 1;
+}
+
+// Message defining language group.
+// Group several languages and assigns them common identifier.
+// Defining group produces score for the individual languages as well as for the language groups.
+message LanguageGroup {
+  // Identifier of created group.
+  // This identifier will be used in <code>LanguageIdentificationScore</code>.
+  // Group identifier must be unique between all groups and languages.
+  string identifier = 1;
+
+  // Set of languages forming this group.
+  repeated string language_codes = 2;
+}
+
+// Message representing the result of language identification.
+message LanguageIdentificationResult {
+  // Speech length from which the languageprint was extracted.
+  google.protobuf.Duration speech_length = 1;
+
+  // List of scores for each selected language or language group.
+  repeated LanguageIdentificationScore scores = 2;
+}
+
+// Score for a single language or language group.
+message LanguageIdentificationScore {
+  // This field has either language code (specified by RFC 5646) or identifier of language group.
+  string identifier = 1;
+
+  // Score for this language or language group.
+  // The score is a probability distribution representing the probability likelihood
+  // of the input belonging to each language.
+  // Language group scores sum up the probabilities of their individual languages.
+  float score = 2;
+}

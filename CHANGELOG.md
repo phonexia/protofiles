@@ -1,5 +1,9 @@
 # Phonexia gRPC application interface
 
+## 2.1.0 (2024-05-30)
+### Added
+- Interface for `language identification` in `phonexia.grpc.technologies.language_identification.v1`
+
 ## 2.0.0 (2024-04-25)
 ### Changed
 - Renamed `speech_to_text_whisper_enhanced` to `enhanced_speech_to_text_built_on_whisper`
