@@ -69,14 +69,17 @@ message IdentifyConfig {
 
   // Specify which languages can be used for language identification.
   // Choose only from list of supported languages, which can be retrieved at <code>ListSuportedlanguages</code>.
-  // Choosing desired languages is profficient to better identify a smaller group of languages since probability will be distributed only on selected languages.
+  // Choosing desired languages redistributes the probabilities of excluded languages into the rest of languages relative
+  // to their scores. Excluding a dialect of a language may however result in inaccurate scores for other dialects in cases
+  // when the excluded dialect would have a probability score close to 1.
   // Leaving this field empty is the same as selecting every supported language.
   repeated Language languages = 2;
 
-  // Create custom groups of languages and assign them common identifier.
-  // Defining group produces score for the individual languages as well as for the group.
+  // Create custom groups of languages and assign them a common identifier.
+  // By defining a group a new entity that encapsulates the group languages is created. This group holds the scores of the
+  // individual languages as well as their sum.
   // One of the use cases for using groups may be grouping individual language dialects into one encapsulating group.  
-  // Languages in multiple clusters mustn't intersect. Meaning one language cannot be in multiple clusters at the same time.
+  // Groups of languages mustn't intersect, that means a language can only be part of at most one group.
   repeated LanguageGroup groups = 3;
 }
 
@@ -92,7 +95,7 @@ message Language {
 message LanguageGroup {
   // Identifier of created group.
   // This identifier will be used in <code>LanguageIdentificationScore</code>.
-  // Group identifier must be unique between all groups and languages.
+  // Group identifier must be unique among all groups and languages.
   string identifier = 1;
 
   // Set of languages forming this group.
@@ -104,7 +107,13 @@ message LanguageIdentificationResult {
   // Speech length from which the languageprint was extracted.
   google.protobuf.Duration speech_length = 1;
 
-  // List of scores for each selected language or language group.
+  // List of scores for each selected language and language group.
+  // This list holds N elements, where:
+  // N = (number of supported languages) + (number of groups) - (number of languages defined within groups).
+  //
+  // Example: For 140 supported langauges and 2 groups each containing 4 unique langueges
+  // this field holds: 140 + 2 - (2 * 4) = 134 elements including 132 languages and 2 groups.
+  // Scores of the individual languages from the groups are embeded within the groups.
   repeated LanguageIdentificationScore scores = 2;
 }
 
@@ -114,8 +123,12 @@ message LanguageIdentificationScore {
   string identifier = 1;
 
   // Score for this language or language group.
-  // The score is a probability distribution representing the probability likelihood
-  // of the input belonging to each language.
+  // The score represents the probability of the input belonging to a particular
+  // language.
   // Language group scores sum up the probabilities of their individual languages.
   float score = 2;
+
+  // This field is only set for language groups. 
+  // Scores for individual languages that this group is comprised of can be found in this field.
+  repeated LanguageIdentificationScore individual_languages = 3;
 }
