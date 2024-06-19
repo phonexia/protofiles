@@ -1,5 +1,9 @@
 # Phonexia gRPC application interface
 
+## 2.2.0 (2024-06-19)
+### Added
+- `individual_languages` field in `phonexia.grpc.technologies.language_identification.v1.LanguageIdentificationScore` for lnaguages belonging to a group
+
 ## 2.1.0 (2024-05-30)
 ### Added
 - Interface for `language identification` in `phonexia.grpc.technologies.language_identification.v1`
