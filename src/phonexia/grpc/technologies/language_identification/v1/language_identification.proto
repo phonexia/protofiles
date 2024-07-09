@@ -119,16 +119,30 @@ message LanguageIdentificationResult {
 
 // Score for a single language or language group.
 message LanguageIdentificationScore {
-  // This field has either language code (specified by RFC 5646) or identifier of language group.
+  // Enumeration of supported identifier types.
+  enum IdentifierType {
+    // The identifier specifies a single built-in language.
+    LANGUAGE = 0;
+    // The identifier specifies a user-defined group of languages.
+    GROUP = 1;
+  }
+
+  // This field contains either a language code (specified by RFC 5646) or a language
+  // group identifier.
   string identifier = 1;
 
   // Score for this language or language group.
   // The score represents the probability of the input belonging to a particular
-  // language.
-  // Language group scores sum up the probabilities of their individual languages.
-  float score = 2;
+  // language/group.
+  // Language group probability is the sum of the probabilities of its languages.
+  float probability = 2;
 
   // This field is only set for language groups. 
-  // Scores for individual languages that this group is comprised of can be found in this field.
-  repeated LanguageIdentificationScore individual_languages = 3;
+  // Scores for individual languages that this group is comprised of can be found in
+  // this field.
+  repeated LanguageIdentificationScore languages = 3;
+
+  // This field explicitly identifies the score as belonging to either an individual
+  // language or a language group.
+  IdentifierType identifier_type = 4;
 }
