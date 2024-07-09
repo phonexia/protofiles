@@ -1,8 +1,16 @@
 # Phonexia gRPC application interface
 
+## 2.3.0 (2024-07-09)
+### Changed
+- `score` field to `probability` in `phonexia.grpc.technologies.language_identification.v1.LanguageIdentificationScore`
+- `individual_languages` field to `languages` in `phonexia.grpc.technologies.language_identification.v1.LanguageIdentificationScore`
+### Added
+- `IdentifierType` enum and `identifier_type` field in `phonexia.grpc.technologies.language_identification.v1.LanguageIdentificationScore`
+- Support for raw audio streaming using the `raw_audio_config` field in `phonexia.grpc.common.Audio`
+
 ## 2.2.0 (2024-06-19)
 ### Added
-- `individual_languages` field in `phonexia.grpc.technologies.language_identification.v1.LanguageIdentificationScore` for lnaguages belonging to a group
+- `individual_languages` field in `phonexia.grpc.technologies.language_identification.v1.LanguageIdentificationScore` for languages belonging to a group
 
 ## 2.1.0 (2024-05-30)
 ### Added
