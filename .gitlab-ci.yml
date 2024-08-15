@@ -1,5 +1,6 @@
 include:
   - project: phonexia/dev/technologies/microservices/ci-templates
+    ref: main
     file:
       - /templates/renovate.yml
       - /templates/protofiles-public/doc.yml

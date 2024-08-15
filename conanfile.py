@@ -1,9 +1,9 @@
 import os
-import re
 
 from conan import ConanFile
-from conan.tools.cmake import CMake, CMakeToolchain, CMakeDeps
-from conans.tools import collect_libs, load, Git
+from conan.tools.cmake import CMake, cmake_layout
+from conan.tools.files import collect_libs, copy
+from conan.tools.scm import Git
 
 
 class PhonexiaGrpcProtobuf(ConanFile):
@@ -15,23 +15,36 @@ class PhonexiaGrpcProtobuf(ConanFile):
     generators = ["CMakeDeps", "CMakeToolchain"]
     exports_sources = ["CmakeLists.txt", "src/**"]
     options = {"shared": [True, False], "fPIC": [True, False]}
-    default_options = {"shared": False, "fPIC": True}
+    default_options = {
+        "shared": False, 
+        "fPIC": True,
+        "grpc/*:with_libsystemd": False
+        }
+    package_type = "library"
+
+    def layout(self):
+        cmake_layout(self)
+
+    @staticmethod
+    def is_tag(git: Git) -> bool:
+        try:
+            git.run("describe --tags --exact-match")
+            return True
+        except:
+            return False
+
+    def get_latest_tag(self) -> str:
+        git = Git(self)
+        return git.run("describe --tags --abbrev=0 --always").strip()
 
     def set_version(self):
-        self.version = get_latest_tag()
+        self.version = self.get_latest_tag()
         build_num = os.getenv("CI_PIPELINE_ID")
-        if build_num and not Git().get_tag():
+        if build_num and not self.is_tag(Git(self)):
             self.version = "{}-{}".format(self.version, build_num)
-
-    def generate(self):
-        tc = CMakeToolchain(self)
-        tc.generate()
-        deps = CMakeDeps(self)
-        deps.generate()
 
     def configure_cmake(self):
         cmake = CMake(self)
-        cmake.verbose = True
         cmake.configure()
         return cmake
 
@@ -41,16 +54,11 @@ class PhonexiaGrpcProtobuf(ConanFile):
 
     def requirements(self):
         self.requires("grpc/1.54.3")
-        self.requires("googleapis/cci.20230501")
+        self.requires("googleapis/cci.20230501", transitive_headers=True)
 
     def package(self):
-        cmake = self.configure_cmake()
+        cmake = CMake(self)
         cmake.install()
 
     def package_info(self):
         self.cpp_info.libs = collect_libs(self)
-
-
-def get_latest_tag() -> str:
-    git = Git()
-    return git.run("describe --tags --abbrev=0 --always").strip()
