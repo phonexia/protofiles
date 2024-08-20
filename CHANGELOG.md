@@ -1,5 +1,9 @@
 # Phonexia gRPC application interface
 
+## 2.3.1 (2024-08-20)
+### Changed
+- `max_speakers` argument is made optional in `phonexia.grpc.technologies.speaker_diarization.v1.DiarizeConfig` message
+
 ## 2.3.0 (2024-07-09)
 ### Changed
 - `score` field to `probability` in `phonexia.grpc.technologies.language_identification.v1.LanguageIdentificationScore`

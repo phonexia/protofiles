@@ -40,7 +40,7 @@ message DiarizeConfig {
   // Upper limit for the number of speakers in the audio.
   // The value must be larger than 0.
   // If omitted, the default value is set to 100.
-  int32 max_speakers = 1;
+  optional int32 max_speakers = 1;
 
   // Enforces exact number of speakers in the audio. If set, it overwrites
   // <code>max_speakers</code>. If not set, the number of speakers
