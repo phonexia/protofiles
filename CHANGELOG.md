@@ -1,5 +1,9 @@
 # Phonexia gRPC application interface
 
+## 2.4.0 (2024-09-11)
+### Added
+- Interface for `Voice Activity Detection` in `phonexia.grpc.technologies.voice_activity_detection.v1`
+
 ## 2.3.1 (2024-08-20)
 ### Changed
 - `max_speakers` argument is made optional in `phonexia.grpc.technologies.speaker_diarization.v1.DiarizeConfig` message
