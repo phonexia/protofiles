@@ -1,0 +1,63 @@
+// Copyright 2024 Phonexia s.r.o.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Phonexia Voice Activity Detection gRPC API.
+syntax = "proto3";
+
+package phonexia.grpc.technologies.voice_activity_detection.v1;
+
+import "phonexia/grpc/common/core.proto";
+import "google/protobuf/duration.proto";
+
+// Service that implements voice activity detection.
+service VoiceActivityDetection {
+  // Performs synchronous voice activity detection on the given audio.
+  rpc Detect(stream DetectRequest) returns (DetectResponse);
+}
+
+// The top-level message sent by the client for the <code>Detect</code>
+// method.
+message DetectRequest {
+  phonexia.grpc.common.Audio audio = 1;
+}
+
+// The top-level message returned to the client by the <code>Detect</code>
+// method.
+message DetectResponse {
+  // Total speech length detected in the audio.
+  google.protobuf.Duration speech_length = 1;
+  
+  // List of detected voice segments.
+  repeated Segment segments = 2;
+
+  // Total length of the processed audio.
+  google.protobuf.Duration processed_audio_length = 3;
+}
+
+// Detected voice segment.
+message Segment {
+  // Enumeration of supported segment types.
+  enum SegmentType {
+    VOICE = 0;
+  }
+
+  // Type of the segment.
+  SegmentType type = 1;
+
+  // Timestamp specifying the beginning of the segment.
+  google.protobuf.Duration start_time = 2;
+
+  // Timestamp specifying the end of the segment.
+  google.protobuf.Duration end_time = 3;
+}
