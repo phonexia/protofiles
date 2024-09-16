@@ -1,5 +1,9 @@
 # Phonexia gRPC application interface
 
+## 2.5.0 (2024-09-16)
+### Added
+- `probability` field in `phonexia.grpc.technologies.gender_identification.v1.Score`
+
 ## 2.4.0 (2024-09-11)
 ### Added
 - Interface for `Voice Activity Detection` in `phonexia.grpc.technologies.voice_activity_detection.v1`
