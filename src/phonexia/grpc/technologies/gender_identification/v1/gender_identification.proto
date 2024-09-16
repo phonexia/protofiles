@@ -42,6 +42,8 @@ message Score {
   // supported by the data than the other model, while the negative LLR suggests
   // the opposite. 
   float score_llr = 1;
+  // Decimal value between 0.0 and 1.0, representing a probability.
+  float probability = 2;
 }
 
 // A gender identification result. It contains scores for respective genders.
