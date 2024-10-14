@@ -1,0 +1,84 @@
+// Copyright 2024 Phonexia s.r.o.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Phonexia Emotion Recognition gRPC API.
+syntax = "proto3";
+
+package phonexia.grpc.technologies.emotion_recognition.v1;
+
+import "phonexia/grpc/common/core.proto";
+import "google/protobuf/duration.proto";
+
+// Service implementing emotion recognition.
+service EmotionRecognition {
+    // Performs emotion recognition on the given audio.
+    // Returns list of scores for each supported emotion.
+    rpc Recognize(stream RecognizeRequest) returns (RecognizeResponse);
+}
+
+// The top-level message sent by the client for the <code>Recognize</code> method.
+message RecognizeRequest {
+    // Audio data to recognize the emotions of speakers from.
+    // If the audio is in a raw format and the <code>config.speech_length</code> is set,
+    // the result may be returned before the whole audio is transferred as long as the required
+    // speech length is met.
+    phonexia.grpc.common.Audio audio = 1;
+
+    // Configuration for the emotion detection.
+    optional RecognizeConfig config = 2;
+}
+
+// The configuration message for the <code>Recognize</code> method.
+message RecognizeConfig {
+    // Specifies the maximum speech length from which the emotions will be recognized. 
+    // If there is less speech in the audio than the specified
+    // duration, the emotions will be recognized from the entire audio.
+    google.protobuf.Duration speech_length = 1;
+}
+
+// The top-level message returned to the client by the <code>Recognize</code> method.
+message RecognizeResponse {
+    // Result containing the recognized emotions with their scores.
+    RecognizeResult result = 1;
+
+    // Total length of the processed audio.
+    google.protobuf.Duration processed_audio_length = 2;
+}
+
+// Message containing the result of emotion recognition.
+message RecognizeResult{    
+    // Total speech length from which the emotions were recognized.
+    google.protobuf.Duration speech_length = 1;
+
+    // List of emotions and their probabilities.
+    // It can be empty if the input does not contain any speech.
+    repeated EmotionScore scores = 2;
+}
+
+// Message containing the emotion type and its probability.
+message EmotionScore{
+    // Supported emotion types.
+    enum EmotionType {
+        ANGRY = 0;
+        SAD = 1;
+        HAPPY = 2;
+        NEUTRAL = 3;
+    }
+
+    // Recognized emotion from the supported types.
+    EmotionType emotion = 1;
+
+    // Probability score associated with the recognized emotion.
+    float probability = 2;
+}
