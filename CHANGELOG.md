@@ -1,5 +1,9 @@
 # Phonexia gRPC application interface
 
+## 2.6.0 (2024-10-14)
+### Added
+- Interface for `Emotion Recognition` in `phonexia.grpc.technologies.emotion_recognition.v1`
+
 ## 2.5.0 (2024-09-16)
 ### Added
 - `probability` field in `phonexia.grpc.technologies.gender_identification.v1.Score`
