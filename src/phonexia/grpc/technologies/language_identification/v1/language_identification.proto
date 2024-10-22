@@ -17,28 +17,42 @@ syntax = "proto3";
 
 package phonexia.grpc.technologies.language_identification.v1;
 
-import "phonexia/grpc/common/core.proto";
 import "google/protobuf/duration.proto";
+import "phonexia/grpc/common/core.proto";
 
 // Service implementing language identification.
 service LanguageIdentification {
-  // Performs language identification on the given audio.
-  // Returns list of scores for each supported language.
-  // Languages are identified by the RFC 5646 language codes.
+  // Performs language identification on the given audio or languageprint.
+  // Returns list of scores for each built-in or added language.
+  // Built-in languages are identified by the RFC 5646 language codes.
   rpc Identify(stream IdentifyRequest) returns (IdentifyResponse);
 
-  // Retrieve supported languages available to identify in the input.
-  // This method will return a list of supported languages as RFC 5646 language codes.
-  rpc ListSupportedLanguages(ListSupportedLanguagesRequest) returns (ListSupportedLanguagesResponse);
+  // Retrieve built-in or added languages available to identify in the input.
+  // This method will return a list of supported languages.
+  // Built-in languages are identified by the RFC 5646 language codes.
+  // Languages added via language adaptation are identified by a custom identifier.
+  rpc ListSupportedLanguages(ListSupportedLanguagesRequest) returns (ListSupportedLanguagesResponse); // protolint:disable:this MAX_LINE_LENGTH
+
+  // Performs languageprint extraction on the given audio.
+  rpc Extract(stream ExtractRequest) returns (ExtractResponse);
+
+  // Perform supervised adaptation of the technology using custom-annotated data.
+  // Individual languages can be adapted for better performance on custom data.
+  // Alternatively, new languages can be introduced via the adaptation.
+  rpc Adapt(stream AdaptRequest) returns (AdaptResponse);
 }
 
 // The top level message sent by the client for the <code>Identify</code> method.
+// The method accepts either Audio data or Languageprint.
 message IdentifyRequest {
-  // Audio data to be identified.
+  // Audio data in which language is to be identified.
   phonexia.grpc.common.Audio audio = 1;
 
   // Configuration for the language identification.
   IdentifyConfig config = 2;
+
+  // Languageprint in which language is to be identified.
+  Languageprint languageprint = 3;
 }
 
 // The top level message returned to the client by the <code>Identify</code> method.
@@ -51,36 +65,107 @@ message IdentifyResponse {
   google.protobuf.Duration processed_audio_length = 2;
 }
 
-// The top-level message sent by the client for the <code>ListSupportedLanguages</code> method.
+// The top-level message sent by the client for the
+// <code>ListSupportedLanguages</code> method.
 message ListSupportedLanguagesRequest {
+  // Configuration for the listing of supported languages.
+  ListSupportedLanguagesConfig config = 1;
 }
 
-// The top-level message returned to the client by the <code>ListSupportedLanguages</code>.
+// The top-level message returned to the client by the
+// <code>ListSupportedLanguages</code> method.
 message ListSupportedLanguagesResponse {
   // List of supported languages.
   repeated string supported_languages = 1;
+
+  // Subset of <code>supported_languages</code> that were modified with custom data via
+  // language adaptation.
+  repeated string modified_languages = 2;
+
+  // Subset of <code>supported_languages</code> that were added via language adaptation.
+  repeated string added_languages = 3;
 }
 
+// The top level message sent by the client for the <code>Extract</code> method.
+message ExtractRequest {
+  // Audio to extract the languageprint from.
+  // If the audio is in a raw format and the <code>config.speech_length</code> is
+  // set, the result can be returned before the whole audio was transferred if the
+  // requirements for speech length were met.
+  phonexia.grpc.common.Audio audio = 1;
+
+  // Configuration for the languageprint extraction.
+  ExtractConfig config = 2;
+}
+
+// The top level message returned to the client by the <code>Extract</code> method.
+message ExtractResponse {
+  // Result containing the extracted languageprint.
+  ExtractResult result = 1;
+
+  // When available, total length of the processed audio.
+  // Set only if this is the last response in the stream.
+  google.protobuf.Duration processed_audio_length = 2;
+}
+
+// The top-level message sent by the client for the <code>Adapt</code> method.
+message AdaptRequest {
+  // Data (languageprints, metadata) used for the supervised adaptation.
+  repeated AdaptationUnit adaptation_units = 1;
+}
+
+// The top-level message returned to the client by the <code>Adapt</code> method.
+message AdaptResponse {
+  // Result of language adaptation.
+  AdaptationResult result = 1;
+}
+
+// Message used for configuration of the <code>Identify</code> method.
 message IdentifyConfig {
-  // Specifies the maximum speech length from which the languages will be
-  // identified. If there is less speech in the audio than the specified
-  // duration, the languages will be identified from the entire audio.
+  // Specifies the maximum speech length from which the languages will be identified.
+  // If there is less speech in the audio than the specified duration, the languages
+  // will be identified from the entire audio. This option is applicable only for Audio
+  // data.
   google.protobuf.Duration speech_length = 1;
 
   // Specify which languages can be used for language identification.
-  // Choose only from list of supported languages, which can be retrieved at <code>ListSuportedlanguages</code>.
-  // Choosing desired languages redistributes the probabilities of excluded languages into the rest of languages relative
-  // to their scores. Excluding a dialect of a language may however result in inaccurate scores for other dialects in cases
-  // when the excluded dialect would have a probability score close to 1.
-  // Leaving this field empty is the same as selecting every supported language.
+  // Choose only from list of supported languages, which can be retrieved at
+  // <code>ListSupportedLanguages</code>. Choosing desired languages redistributes
+  // the probabilities of excluded languages into the rest of languages relative
+  // to their scores. Excluding a dialect of a language may however result in
+  // inaccurate scores for other dialects in cases when the excluded dialect would
+  // have a probability score close to 1. Leaving this field empty is the same as
+  // selecting every supported language.
   repeated Language languages = 2;
 
   // Create custom groups of languages and assign them a common identifier.
-  // By defining a group a new entity that encapsulates the group languages is created. This group holds the scores of the
-  // individual languages as well as their sum.
-  // One of the use cases for using groups may be grouping individual language dialects into one encapsulating group.  
-  // Groups of languages mustn't intersect, that means a language can only be part of at most one group.
+  // By defining a group a new entity that encapsulates the group languages is
+  // created. This group holds the scores of the individual languages as well as
+  // their sum. One of the use cases for using groups may be grouping individual
+  // language dialects into one encapsulating group. Groups of languages mustn't
+  // intersect, that means a language can only be part of at most one group.
   repeated LanguageGroup groups = 3;
+
+  // Adapt the model with language adaptation obtained via the <code>Adapt</code>
+  // method. Be careful to only send this field with the first message of the stream,
+  // as it is several kilobytes in size.
+  AdaptationProfile adaptation_profile = 4;
+}
+
+// Message used for configuration of the <code>ListSupportedLanguages</code> method.
+message ListSupportedLanguagesConfig {
+  // Adapt the model with language adaptation obtained via the <code>Adapt</code>
+  // method. The returned list will then contain all built-in languages as well as
+  // languages modified and newly added using the language adaptation.
+  AdaptationProfile adaptation_profile = 1;
+}
+
+// Message used for configuration of the <code>Extract</code> method.
+message ExtractConfig {
+  // Specifies the maximum speech length from which the languageprint may be extracted.
+  // If there is less speech in the audio than the specified duration, the languageprint
+  // will be extracted from the entire audio.
+  google.protobuf.Duration speech_length = 1;
 }
 
 // Message for selecting specific language.
@@ -89,9 +174,9 @@ message Language {
   string language_code = 1;
 }
 
-// Message defining language group.
-// Group several languages and assigns them common identifier.
-// Defining group produces score for the individual languages as well as for the language groups.
+// Message defining language group. Group several languages and assigns them common
+// identifier. Defining group produces score for the individual languages as well as
+// for the language groups.
 message LanguageGroup {
   // Identifier of created group.
   // This identifier will be used in <code>LanguageIdentificationScore</code>.
@@ -102,6 +187,12 @@ message LanguageGroup {
   repeated string language_codes = 2;
 }
 
+// Represents the result from languageprint extraction.
+message Languageprint {
+  // Languageprint data encoded in UBJSON format.
+  bytes content = 1;
+}
+
 // Message representing the result of language identification.
 message LanguageIdentificationResult {
   // Speech length from which the languageprint was extracted.
@@ -109,11 +200,13 @@ message LanguageIdentificationResult {
 
   // List of scores for each selected language and language group.
   // This list holds N elements, where:
-  // N = (number of supported languages) + (number of groups) - (number of languages defined within groups).
+  // N = (number of supported languages) + (number of groups) - (number of languages
+  // defined within groups).
   //
-  // Example: For 140 supported langauges and 2 groups each containing 4 unique langueges
-  // this field holds: 140 + 2 - (2 * 4) = 134 elements including 132 languages and 2 groups.
-  // Scores of the individual languages from the groups are embeded within the groups.
+  // Example: For 140 supported languages and 2 groups each containing 4 unique
+  // languages this field holds: 140 + 2 - (2 * 4) = 134 elements including 132
+  // languages and 2 groups. Scores of the individual languages from the groups
+  // are embedded within the groups.
   repeated LanguageIdentificationScore scores = 2;
 }
 
@@ -121,14 +214,15 @@ message LanguageIdentificationResult {
 message LanguageIdentificationScore {
   // Enumeration of supported identifier types.
   enum IdentifierType {
-    // The identifier specifies a single built-in language.
+    // The identifier specifies a single language (built-in or adapted)
     LANGUAGE = 0;
     // The identifier specifies a user-defined group of languages.
     GROUP = 1;
   }
 
-  // This field contains either a language code (specified by RFC 5646) or a language
-  // group identifier.
+  // This field contains either a language identifier or a language group identifier.
+  // Language identifiers may be specified by a RFC 5646 code for built-in languages or
+  // by a custom identifier for languages added via language adaptation.
   string identifier = 1;
 
   // Score for this language or language group.
@@ -137,7 +231,7 @@ message LanguageIdentificationScore {
   // Language group probability is the sum of the probabilities of its languages.
   float probability = 2;
 
-  // This field is only set for language groups. 
+  // This field is only set for language groups.
   // Scores for individual languages that this group is comprised of can be found in
   // this field.
   repeated LanguageIdentificationScore languages = 3;
@@ -145,4 +239,50 @@ message LanguageIdentificationScore {
   // This field explicitly identifies the score as belonging to either an individual
   // language or a language group.
   IdentifierType identifier_type = 4;
+}
+
+// A languageprint extraction result.
+message ExtractResult {
+  // Speech length from which the languageprint was extracted.
+  google.protobuf.Duration speech_length = 1;
+
+  // Extracted languageprint.
+  Languageprint languageprint = 2;
+}
+
+// A unit used for language adaptation. Language adaptation is typically performed with
+// many adaptation units. Each unit must be assigned to either an existing language to
+// adapt its accuracy on new data, or to a new identifier to create a new language in
+// the language identification.
+message AdaptationUnit {
+  // Languageprint containing the data for adaptation.
+  Languageprint languageprint = 1;
+
+  // The language contained in the languageprint recording.
+  // By selecting a built-in language, this language will be modified for better
+  // performance on custom data.
+  // By selecting a new language, the system will add this language to the possible
+  // languages for language identification.
+  Language language = 2;
+}
+
+// Message containing the language adaptation profile. We recommend to store the
+// original audio data, as the <code>AdaptationProfile</code> created for a specific
+// version of Language Identification may not work with a different version and
+// thus the <code>AdaptationProfile</code> would need to be created anew.
+message AdaptationProfile {
+  // The data of the language adaptation profile.
+  bytes content = 1;
+}
+
+// Message representing the result of language adaptation.
+message AdaptationResult {
+  // A structure containing the resulting adaptation data for the technology.
+  AdaptationProfile adaptation_profile = 1;
+
+  // Built-in languages that were modified by the adaptation.
+  repeated string modified_languages = 2;
+
+  // New languages that were added by the adaptation.
+  repeated string added_languages = 3;
 }
