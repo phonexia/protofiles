@@ -1,5 +1,12 @@
 # Phonexia gRPC application interface
 
+## 2.7.0 (2024-10-23)
+### Added
+- `Extract` method for languageprint extraction in `phonexia.grpc.technologies.language_identification.v1.LanguageIdentification`
+- Languageprint support in `Identify` method in `phonexia.grpc.technologies.language_identification.v1.LanguageIdentification`
+- `Adapt` method for adaptation profile creation in `phonexia.grpc.technologies.language_identification.v1.LanguageIdentification`
+- Support for using adaptation profile in `Identify` and `ListSupportedLanguages` in `phonexia.grpc.technologies.language_identification.v1.LanguageIdentification`
+
 ## 2.6.0 (2024-10-14)
 ### Added
 - Interface for `Emotion Recognition` in `phonexia.grpc.technologies.emotion_recognition.v1`
