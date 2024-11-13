@@ -1,5 +1,9 @@
 # Phonexia gRPC application interface
 
+## 2.8.0 (2024-11-12)
+### Added
+- Interface for `Denoiser` in `phonexia.grpc.technologies.denoiser.v1`
+
 ## 2.7.0 (2024-10-23)
 ### Added
 - `Extract` method for languageprint extraction in `phonexia.grpc.technologies.language_identification.v1.LanguageIdentification`
