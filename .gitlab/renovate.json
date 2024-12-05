@@ -24,7 +24,7 @@
         "conan"
       ],
       "registryUrls": [
-        "https://center.conan.io",
+        "https://center2.conan.io",
         "https://phxconan.jfrog.io/artifactory/api/conan/phx"
       ]
     }
