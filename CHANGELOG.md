@@ -1,6 +1,6 @@
 # Phonexia gRPC application interface
 
-## 2.8.0 (2024-11-12)
+## 2.8.0 (2024-12-09)
 ### Added
 - Interface for `Denoiser` in `phonexia.grpc.technologies.denoiser.v1`
 
