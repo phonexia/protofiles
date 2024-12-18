@@ -33,7 +33,7 @@ name = "PyPI"
 priority = "default"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.9"
 grpcio = "^1.59.0"
 protobuf = "^5.0.0"
 mypy-protobuf = "^3.5.0"
