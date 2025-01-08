@@ -1,5 +1,9 @@
 # Phonexia gRPC application interface
 
+## 2.9.0 (2025-01-08)
+### Added
+- Interface for `DeepfakeDetection` in `phonexia.grpc.technologies.deepfake_detection.experimental`
+
 ## 2.8.0 (2024-12-09)
 ### Added
 - Interface for `Denoiser` in `phonexia.grpc.technologies.denoiser.v1`
