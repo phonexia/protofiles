@@ -9,12 +9,14 @@ license = "Apache-2.0"
 packages = [
     { include = "phonexia" },
 ]
+
 # Directory with build needs to be included explicitly, since poetry follows
-# .gitignore and excludes it by default. Also, py.typed is included to tell static type checkers
-# that typing support is available.
+# .gitignore and excludes it by default. Also, py.typed is included to tell static
+# type checkers that typing support is available. Please note that files are to be
+# included in both source distribution and wheel package.
 include = [
-    "phonexia/**/*.py*",
-    "phonexia/py.typed",
+    { path = "phonexia/**/*.py*", format = ["sdist", "wheel"] },
+    { path = "phonexia/py.typed", format = ["sdist", "wheel"] }
 ]
 
 [tool.poetry.urls]
