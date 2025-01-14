@@ -1,7 +1,10 @@
-dist/**
+dist/
 .vscode
+.idea
 poetry.lock
 build
 
 CMakeLists.txt.user
 CMakeUserPresets.json
+
+phonexia/
