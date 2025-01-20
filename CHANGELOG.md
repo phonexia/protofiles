@@ -1,5 +1,9 @@
 # Phonexia gRPC application interface
 
+## 2.10.0 (2025-01-20)
+### Added
+- `Word` message that represents detailed per-word segmentation of segment in `phonexia.grpc.technologies.enhanced_speech_to_text_built_on_whisper.v1`
+
 ## 2.9.0 (2025-01-08)
 ### Added
 - Interface for `DeepfakeDetection` in `phonexia.grpc.technologies.deepfake_detection.experimental`

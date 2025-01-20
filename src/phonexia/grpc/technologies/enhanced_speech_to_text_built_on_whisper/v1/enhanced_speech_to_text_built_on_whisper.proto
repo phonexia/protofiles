@@ -1,4 +1,4 @@
-// Copyright 2024 Phonexia s.r.o.
+// Copyright 2025 Phonexia s.r.o.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -64,6 +64,11 @@ message TranscribeConfig {
   // Note: This option is ignored if the language is enforced by setting the
   // <code>language</code> option.
   bool enable_language_switching = 2;
+
+  // If set to `true`, the result will contain word-level segmentation.
+  //
+  // Note: Enabling this option may incrase processing time.
+  bool enable_word_segmentation = 3;
 }
 
 // The top-level message sent by the client for the <code>Translate</code>
@@ -91,6 +96,11 @@ message TranslateConfig {
   // Note: This option is ignored if the language is enforced by setting the
   // <code>source_language</code> option.
   bool enable_language_switching = 2;
+
+  // If set to `true`, the result will contain word-level segmentation.
+  //
+  // Note: Enabling this option may increase processing time.
+  bool enable_word_segmentation = 3;
 }
 
 // The top-level message returned to the client by the <code>Transcribe</code>
@@ -149,6 +159,21 @@ message OneBest {
   repeated OneBestSegment segments = 1;
 }
 
+// Individual word with timestamps.
+message Word {
+  // Text of the word.
+  string text = 1;
+
+  // Start time of the word.
+  google.protobuf.Duration start_time = 2;
+
+  // End time of the word.
+  google.protobuf.Duration end_time = 3;
+
+  // Text of the word with punctuation and capitalization.
+  string punctuated_text = 4;
+}
+
 // Segment of the one-best output.
 message OneBestSegment {
   // Text content of the segment.
@@ -186,4 +211,7 @@ message OneBestSegment {
   // language than from the set of licensed languages.
   // Always check if this field is equal to <code>source_language</code>.
   string detected_source_language = 6;
+  
+  // Detailed word-level segmentation of the segment.
+  repeated Word words = 7;
 }
