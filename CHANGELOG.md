@@ -1,5 +1,12 @@
 # Phonexia gRPC application interface
 
+## 2.11.0 (2025-01-22)
+### Added
+- Support for audio processing in `phonexia.grpc.technologies.gender_identification.v1`
+### Changed
+- `IdentifyResult.score_male` and `IdentifyResult.score_female` are optional in `phonexia.grpc.technologies.gender_identification.v1` 
+  (they are not set for empty/short audio or voiceprint created from empty/short audio)
+
 ## 2.10.0 (2025-01-20)
 ### Added
 - `Word` message that represents detailed per-word segmentation of segment in `phonexia.grpc.technologies.enhanced_speech_to_text_built_on_whisper.v1`
