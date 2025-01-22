@@ -17,21 +17,38 @@ syntax = "proto3";
 
 package phonexia.grpc.technologies.gender_identification.v1;
 
+import "google/protobuf/duration.proto";
 import "phonexia/grpc/common/core.proto";
 
 // Service that implements gender identification.
 service GenderIdentification {
-  // Performs synchronous gender identification from one or more voiceprints.
-  // Identification is performed on each received chunk and partial results
-  // corresponding to that chunk are returned.
+  // Performs synchronous gender identification from one or more voiceprints or audio.
+  // Identification is performed on each received chunk, and partial results
+  // corresponding to each chunk are returned when using voiceprints. Only single
+  // result is returned when using audio.
   rpc Identify(stream IdentifyRequest) returns (stream IdentifyResponse);
 }
 
 // The top-level message sent by the client for the <code>Identify</code>
 // method.
+// The method accepts either audio data or voiceprints.
 message IdentifyRequest {
   // List of voiceprints for the identification.
   repeated phonexia.grpc.common.Voiceprint voiceprints = 1;
+  
+  // Audio data in which gender is to be identified.
+  phonexia.grpc.common.Audio audio = 2;
+  
+  // Configuration for the gender identification.
+  IdentifyConfig config = 3;
+}
+
+// Message used for configuration of the <code>Identify</code> method.
+message IdentifyConfig {
+  // Specifies the maximum speech length from which the gender will be identified.
+  // If the audio contains less speech than the specified duration, gender will be
+  // identified from the entire audio. This option is applicable only for Audio data.
+  google.protobuf.Duration speech_length = 1;
 }
 
 message Score {
@@ -48,10 +65,14 @@ message Score {
 
 // A gender identification result. It contains scores for respective genders.
 message IdentifyResult {
-  // Score for male.
-  Score score_male = 1;
-  // Score for female.
-  Score score_female = 2;
+  // Score for male. Not set if file is empty or doesn't contain enough speech.
+  optional Score score_male = 1;
+  
+  // Score for female. Not set if file is empty or doesn't contain enough speech.
+  optional Score score_female = 2;
+  
+  // Total speech length from which the gender were recognized.
+  google.protobuf.Duration speech_length = 3;
 }
 
 // The top-level message returned to the client by the <code>Identify</code>
@@ -59,6 +80,10 @@ message IdentifyResult {
 // messages.
 message IdentifyResponse {
   // Sequential list of results corresponding to sequential list of voiceprints
-  // in <code>IdentifyRequest</code>.
+  // in <code>IdentifyRequest</code>. Contains single result when using audio.
   repeated IdentifyResult results = 1;
+  
+  // When available, total length of the processed audio.
+  // Set only if audio is used in <code>IdentifyRequest</code>.
+  google.protobuf.Duration processed_audio_length = 2;
 }
