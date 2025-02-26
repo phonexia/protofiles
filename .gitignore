@@ -7,4 +7,4 @@ build
 CMakeLists.txt.user
 CMakeUserPresets.json
 
-phonexia/
+./phonexia/

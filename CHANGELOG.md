@@ -1,5 +1,9 @@
 # Phonexia gRPC application interface
 
+## 2.12.0 (2025-02-26)
+### Added
+- Interface for `KeywordSpotting` in `phonexia.grpc.technologies.keyword_spotting.v1`
+
 ## 2.11.0 (2025-01-22)
 ### Added
 - Support for audio processing in `phonexia.grpc.technologies.gender_identification.v1`
