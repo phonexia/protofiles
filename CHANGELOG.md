@@ -1,5 +1,9 @@
 # Phonexia gRPC application interface
 
+## 2.12.1 (2025-03-13)
+### Fixed
+- Moved `confidence_sharpness` field into `config` field in `phonexia.grpc.technologies.keyword_spotting.v1`
+
 ## 2.12.0 (2025-02-26)
 ### Added
 - Interface for `KeywordSpotting` in `phonexia.grpc.technologies.keyword_spotting.v1`

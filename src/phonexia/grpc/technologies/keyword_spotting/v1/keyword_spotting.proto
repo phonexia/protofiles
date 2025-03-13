@@ -73,9 +73,16 @@ message DetectRequest {
     repeated Keyword keywords = 2;
 
     /**
+     * Optional Detect request configuration.
+     */
+    DetectConfig config = 3;
+}
+
+message DetectConfig {
+    /**
      *  Specifies how the dynamic range of score is used (default is 1.0). Must be greater than zero.
      */
-    optional float confidence_sharpness = 3;
+    optional float confidence_sharpness = 1;
 }
 
 /**
