@@ -1,9 +1,33 @@
 include:
   - project: phonexia/dev/technologies/microservices/ci-templates
-    ref: main
+    ref: ssa-plat-971
     file:
-      - /templates/renovate.yml
-      - /templates/protofiles/doc.yml
-      - /templates/protofiles/build.yml
-      - /templates/protofiles/publish.yml
-      - /templates/protofiles/test.yml
+      - /templates/build-cpp-package.yml
+      - /templates/check-renovate.yml
+      - /templates/common.yml
+      - /templates/publish-cpp-package.yml
+      - /templates/python/build-python-proto-package.yml
+      - /templates/python/check-python-code-quality.yml
+      - /templates/python/check-python-version-compatibility.yml
+      - /templates/python/publish-pypi-python-package.yml
+
+.PYTHON_VERSIONS: &PYTHON_VERSIONS
+  - '3.9'
+  - '3.10'
+  - '3.11'
+  - '3.12'
+  - '3.13'
+
+check-python-code-quality:
+  parallel:
+    matrix:
+      - PYTHON_VERSION: *PYTHON_VERSIONS
+
+check-python-version-compatibility:
+  parallel:
+    matrix:
+      - PYTHON_VERSION: *PYTHON_VERSIONS
+
+publish-pypi-python-package:
+  needs:
+    - build-python-proto-package
