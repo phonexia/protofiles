@@ -1,6 +1,6 @@
 include:
   - project: phonexia/dev/technologies/microservices/ci-templates
-    ref: ssa-plat-971
+    ref: main
     file:
       - /templates/build-cpp-package.yml
       - /templates/check-renovate.yml
