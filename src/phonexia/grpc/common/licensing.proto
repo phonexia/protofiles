@@ -1,4 +1,4 @@
-// Copyright 2024 Phonexia s.r.o.
+// Copyright 2025 Phonexia s.r.o.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ package phonexia.grpc.common;
 // Service that implements licensing provider.
 service Licensing {
   // Returns information about the license.
-  rpc Info(LicensingInfoRequest) returns (LicensingInfoResult);
+  rpc Info (LicensingInfoRequest) returns (LicensingInfoResult);
 }
 
 message LicensingInfoRequest {}
@@ -30,7 +30,6 @@ message LicensingInfoRequest {}
 message LicensingInfoResult {
   // Validity of a license in YYYY-MM-DD format according to ISO 8601.
   string valid_until = 1;
-
   // License status, contains "false" if the license has expired.
   bool is_valid = 2;
   // Name of the technology being licensed.

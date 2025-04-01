@@ -1,4 +1,4 @@
-// Copyright 2024 Phonexia s.r.o.
+// Copyright 2025 Phonexia s.r.o.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ import "google/protobuf/duration.proto";
 //  or <code>OGG_OPUS</code>.
 message Audio {
   // The audio data bytes encoded in the supported format. In case of raw
-  // audio, this field does not includes the audio header, but only the data.
+  // audio, this field does not include the audio header, but only the data.
   // <em>Note: as with all bytes fields, proto buffers use a pure binary
   // representation.</em>
   bytes content = 1;

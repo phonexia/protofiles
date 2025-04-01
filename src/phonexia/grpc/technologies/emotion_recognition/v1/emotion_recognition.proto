@@ -1,4 +1,4 @@
-// Copyright 2024 Phonexia s.r.o.
+// Copyright 2025 Phonexia s.r.o.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,15 +24,15 @@ import "google/protobuf/duration.proto";
 service EmotionRecognition {
     // Performs emotion recognition on the given audio.
     // Returns list of scores for each supported emotion.
-    rpc Recognize(stream RecognizeRequest) returns (RecognizeResponse);
+    rpc Recognize (stream RecognizeRequest) returns (RecognizeResponse);
 }
 
 // The top-level message sent by the client for the <code>Recognize</code> method.
 message RecognizeRequest {
     // Audio data to recognize the emotions of speakers from.
     // If the audio is in a raw format and the <code>config.speech_length</code> is set,
-    // the result may be returned before the whole audio is transferred as long as the required
-    // speech length is met.
+    // the service will stop processing the audio once the required speech length is met.
+    // Otherwise, the service will process the whole audio. There is no minimum audio length limit.
     phonexia.grpc.common.Audio audio = 1;
 
     // Configuration for the emotion detection.
@@ -57,7 +57,7 @@ message RecognizeResponse {
 }
 
 // Message containing the result of emotion recognition.
-message RecognizeResult{    
+message RecognizeResult {
     // Total speech length from which the emotions were recognized.
     google.protobuf.Duration speech_length = 1;
 
@@ -67,7 +67,7 @@ message RecognizeResult{
 }
 
 // Message containing the emotion type and its probability.
-message EmotionScore{
+message EmotionScore {
     // Supported emotion types.
     enum EmotionType {
         ANGRY = 0;

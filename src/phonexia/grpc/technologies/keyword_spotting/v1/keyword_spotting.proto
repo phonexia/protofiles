@@ -63,7 +63,7 @@ message Keyword {
  */
 message DetectRequest {
     /**
-     * The audio data to process.
+     * The audio data to process. There is no minimum audio length limit.
      */
     phonexia.grpc.common.Audio audio = 1;
 

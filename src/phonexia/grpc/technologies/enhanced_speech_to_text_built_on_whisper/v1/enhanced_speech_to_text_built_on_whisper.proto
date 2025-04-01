@@ -44,7 +44,7 @@ service SpeechToText {
 message TranscribeRequest {
   // Audio data from which a transcription should be extracted.
   // A variety of common audio formats are supported, including WAV, FLAC,
-  // and others.
+  // and others. There is no minimum audio length limit.
   phonexia.grpc.common.Audio audio = 1;
 
   // Speech to text transcription configuration.
@@ -76,7 +76,7 @@ message TranscribeConfig {
 message TranslateRequest {
   // Audio data on which the translation should be performed.
   // A variety of common audio formats are supported, including WAV, FLAC,
-  // and others.
+  // and others. There is no minimum audio length limit.
   phonexia.grpc.common.Audio audio = 1;
 
   // Speech to text translation configuration.

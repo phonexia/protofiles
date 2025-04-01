@@ -1,4 +1,4 @@
-// Copyright 2024 Phonexia s.r.o.
+// Copyright 2025 Phonexia s.r.o.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ service Denoiser {
 
 // The top-level message sent by the client for the <code>Denoise</code> method.
 message DenoiseRequest {
-    // Audio data to denoise.
+    // Audio data to denoise. There is no minimum audio length limit.
     phonexia.grpc.common.Audio audio = 1;
 }
 

@@ -1,4 +1,4 @@
-// Copyright 2024 Phonexia s.r.o.
+// Copyright 2025 Phonexia s.r.o.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -46,6 +46,8 @@ service LanguageIdentification {
 // The method accepts either Audio data or Languageprint.
 message IdentifyRequest {
   // Audio data in which language is to be identified.
+  // The audio should contain at least 0.3125 seconds of speech. If the audio contains less speech,
+  // the <code>scores</code> will be empty.
   phonexia.grpc.common.Audio audio = 1;
 
   // Configuration for the language identification.
@@ -92,6 +94,8 @@ message ExtractRequest {
   // If the audio is in a raw format and the <code>config.speech_length</code> is
   // set, the result can be returned before the whole audio was transferred if the
   // requirements for speech length were met.
+  // The audio should contain at least 0.3125 seconds of speech. If the audio contains less speech,
+  // the resulted languageprint will be empty (contains 0s of speech).
   phonexia.grpc.common.Audio audio = 1;
 
   // Configuration for the languageprint extraction.
