@@ -1,5 +1,9 @@
 # Phonexia gRPC application interface
 
+# 2.13.0 (2025-04-01)
+### Added
+- `DiarizeResponse.speech_length` field in `phonexia.grpc.technologies.speaker_diarization.v1`
+
 ## 2.12.1 (2025-03-13)
 ### Fixed
 - Moved `confidence_sharpness` field into `config` field in `phonexia.grpc.technologies.keyword_spotting.v1`

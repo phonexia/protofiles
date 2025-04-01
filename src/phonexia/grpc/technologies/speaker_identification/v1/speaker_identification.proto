@@ -1,4 +1,4 @@
-// Copyright 2024 Phonexia s.r.o.
+// Copyright 2025 Phonexia s.r.o.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ service VoiceprintComparison {
 
 // Service that implements voiceprint extraction.
 service VoiceprintExtraction {
-  // Performs synchronous voiceprint extraction from an audio. Returns a
+  // Performs synchronous voiceprint extraction from an audio. Returns the
   // result after completely sent and processed audio.
   rpc Extract(stream ExtractRequest) returns (ExtractResponse);
 }
@@ -62,7 +62,11 @@ message CompareResponse {
 
 // The top-level message sent by the client for the <code>Extract</code> method.
 message ExtractRequest {
-  // Audio to extract voiceprints from.
+  // Audio to extract the voiceprints from.
+  // If the audio is in a raw format and the <code>config.speech_length</code> is
+  // set, the result can be returned before the whole audio was transferred if the
+  // requirement for speech length were met.
+  // There is no minimum audio length limit.
   phonexia.grpc.common.Audio audio = 1;
 
   // Voiceprint extraction configuration.

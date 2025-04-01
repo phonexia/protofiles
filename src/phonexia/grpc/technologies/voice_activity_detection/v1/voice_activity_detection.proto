@@ -1,4 +1,4 @@
-// Copyright 2024 Phonexia s.r.o.
+// Copyright 2025 Phonexia s.r.o.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,6 +29,9 @@ service VoiceActivityDetection {
 // The top-level message sent by the client for the <code>Detect</code>
 // method.
 message DetectRequest {
+  // Audio to be processed.
+  // The audio should have minimum length of 0.8 seconds. If the audio is shorter,
+  // the <code>segments</code> will be empty.
   phonexia.grpc.common.Audio audio = 1;
 }
 
@@ -38,7 +41,7 @@ message DetectResponse {
   // Total speech length detected in the audio.
   google.protobuf.Duration speech_length = 1;
   
-  // List of detected voice segments.
+  // List of detected voice segments. Will be empty if the audio is shorter than 0.8 seconds.
   repeated Segment segments = 2;
 
   // Total length of the processed audio.
