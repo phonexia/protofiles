@@ -1,0 +1,80 @@
+// Copyright 2025 Phonexia s.r.o.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Phonexia Age Estimation gRPC API.
+syntax = "proto3";
+
+package phonexia.grpc.technologies.age_estimation.v1;
+
+import "google/protobuf/duration.proto";
+import "phonexia/grpc/common/core.proto";
+
+// Service that implements age estimation.
+service AgeEstimation {
+  // Performs synchronous age estimation using either voiceprints or audio.
+  //
+  // If voiceprints are used:
+  // - Multiple voiceprints can be sent at a time.
+  // - Due to message size limitations (typically 4MB), voiceprints may need to be sent in multiple chunks.
+  // - The service processes each chunk separately and returns a corresponding partial result.
+  //
+  // If audio is used:
+  // - Only a single audio may be sent.
+  // - The result is returned after the entire audio file has been received and processed.
+  rpc Estimate(stream EstimateRequest) returns (stream EstimateResponse);
+}
+
+// The top-level message sent by the client for the <code>Estimate</code> method.
+message EstimateRequest {
+  // List of voiceprints for the estimation.
+  repeated phonexia.grpc.common.Voiceprint voiceprints = 1;
+  
+  // Audio data from which age is to be estimated. There is no minimum audio length limit.
+  phonexia.grpc.common.Audio audio = 2;
+  
+  // Configuration for the age estimation.
+  EstimateConfig config = 3;
+}
+
+// Message used for configuration of the <code>Estimate</code> method.
+message EstimateConfig {
+  // Specifies the maximum speech length from which the age will be estimated.
+  // If there is less speech in the audio than the specified duration, the age
+  // will be estimated from the entire audio. This option is applicable only for Audio
+  // data.
+  google.protobuf.Duration speech_length = 1;
+}
+
+// An age estimation result.
+message EstimateResult {
+  // Estimated age.
+  // This field is not set if not enough speech has been provided.
+  optional uint32 age = 1;
+
+  // Total speech length from which the age was estimated.
+  google.protobuf.Duration speech_length = 2;
+}
+
+// The top-level message returned to the client by the <code>Estimate</code>
+// method. It contains the result as one or more <code>EstimateResult</code>
+// messages.
+message EstimateResponse {
+  // Sequential list of results corresponding to sequential list of voiceprints
+  // in <code>EstimateRequest</code>. Contains single result when using audio.
+  repeated EstimateResult results = 1;
+  
+  // When available, total length of the processed audio.
+  // Set only if audio is used in <code>EstimateRequest</code>.
+  google.protobuf.Duration processed_audio_length = 2;
+}
