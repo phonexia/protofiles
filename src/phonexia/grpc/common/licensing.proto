@@ -36,6 +36,8 @@ message LicensingInfoResult {
   string technology_name = 3;
   // Information about the licensed model.
   ModelInfo model_info = 4;
+  // License flags
+  map<string, string> license_flags = 5;
 }
 
 message ModelInfo {
