@@ -1,5 +1,9 @@
 # Phonexia gRPC application interface
 
+# 2.14.0 (2025-04-07)
+### Added
+- `AgeEstimation` service in `phonexia.grpc.technologies.age_estimation.v1`
+
 # 2.13.0 (2025-04-01)
 ### Added
 - `DiarizeResponse.speech_length` field in `phonexia.grpc.technologies.speaker_diarization.v1`
