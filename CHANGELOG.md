@@ -1,5 +1,10 @@
 # Phonexia gRPC application interface
 
+## 2.15.0 (2025-04-07)
+### Added
+- Interface for `Status` in `phonexia.grpc.common`
+- Field `license_flags` to `LicensingInfoResult` in `phonexia.grpc.common`
+
 # 2.14.0 (2025-04-07)
 ### Added
 - `AgeEstimation` service in `phonexia.grpc.technologies.age_estimation.v1`
