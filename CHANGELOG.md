@@ -1,5 +1,9 @@
 # Phonexia gRPC application interface
 
+## 2.15.1 (2025-04-08)
+### Updated
+- `grpc` library to version 1.69.0
+
 ## 2.15.0 (2025-04-07)
 ### Added
 - Interface for `Status` in `phonexia.grpc.common`
