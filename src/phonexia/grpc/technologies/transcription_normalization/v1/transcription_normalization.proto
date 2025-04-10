@@ -1,0 +1,79 @@
+// Copyright 2025 Phonexia s.r.o.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Phonexia Transcription Normalization gRPC API
+syntax = "proto3";
+
+package phonexia.grpc.technologies.transcription_normalization.v1;
+
+import "google/protobuf/duration.proto";
+
+// Service implementing transcription normalization.
+service TranscriptionNormalization {
+  rpc Normalize(stream NormalizeRequest) returns (stream NormalizeResponse);
+}
+
+// The top-level message sent by the client for the <code>Normalize</code> method.
+message NormalizeRequest {
+  // Sequential list of transcription segments corresponding to sequential
+  // portions of audio.
+  repeated Segment segments = 1;
+
+  // Configuration of the normalization.
+  optional NormalizeConfig config = 2;
+}
+
+message NormalizeConfig {
+  // The language of the text data specified as an RFC 5646 language tag.
+  // It is used for converting numbers written out of words to digits. Numbers are not converted if this field is not set.
+  optional string language = 1;
+}
+
+// The top-level message returned to the client by the <code>Normalize</code>
+// method.
+message NormalizeResponse {
+  // Sequential list of transcription segments corresponding to sequential
+  // portions of audio.
+  repeated Segment segments = 1;
+}
+
+// Individual word with timestamps.
+message Word {
+  // Text of the word.
+  string text = 1;
+
+  // Start time of the word.
+  google.protobuf.Duration start_time = 2;
+
+  // End time of the word.
+  google.protobuf.Duration end_time = 3;
+
+  // Punctuated text of the word.
+  string punctuated_text = 4;
+}
+
+// Transcription segment.
+message Segment {
+  // Text content of the whole segment.
+  string text = 1;
+
+  // Start time of the segment.
+  google.protobuf.Duration start_time = 2;
+
+  // End time of the segment.
+  google.protobuf.Duration end_time = 3;
+
+  // Detailed word-level segmentation of the segment.
+  repeated Word words = 4;
+}

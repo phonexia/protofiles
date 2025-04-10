@@ -1,5 +1,9 @@
 # Phonexia gRPC application interface
 
+# 2.16.0 (2025-04-10)
+### Added
+- `TranscriptionNormalization` service in `phonexia.grpc.technologies.transcription_normalization.v1`
+
 ## 2.15.1 (2025-04-08)
 ### Updated
 - `grpc` library to version 1.69.0
