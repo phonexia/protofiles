@@ -1,5 +1,9 @@
 # Phonexia gRPC application interface
 
+# 2.16.2 (2025-05-20)
+### Updated
+- Documentation for `phonexia.grpc.technologies.deepfake_detection.experimental.DetectResult.score` which is now LLR score
+
 # 2.16.1 (2025-04-23)
 ### Fixed
 - Downgraded `grpc` library to version 1.67.1 due to compatibility issues

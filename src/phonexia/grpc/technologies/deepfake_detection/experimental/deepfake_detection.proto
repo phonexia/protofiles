@@ -45,9 +45,9 @@ message DetectResponse {
 
 // Message representing the result of deepfake detection.
 message DetectResult {
-  // Score of the deepfake detection. A higher score indicates a higher
-  // likelihood of the audio being a deepfake. The score is a floating-point
-  // value. While technically limited by floating-point representation,
-  // scores are typically within a certain range that varies model to model.
+  // Log-likelihood ratio (LLR) of the deepfake detection. The score is a
+  // floating-point value. A value greater than 0 indicates the audio is likely
+  // a deepfake, while a value less than 0 indicates the audio is likely not a
+  // deepfake.
   float score = 1;
 }
