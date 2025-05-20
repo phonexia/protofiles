@@ -29,14 +29,14 @@ service DeepfakeDetection {
 // The top level message sent by the client for the <code>Detect</code> method.
 message DetectRequest {
   // Audio data for deepfake detection.
-  // The audio should have minimum length of 3 seconds. If the audio is shorter,
+  // The audio should contain at least 3 seconds of continuous speech. If there is not enough speech,
   // the <code>result</code> will not be present in the output.
   phonexia.grpc.common.Audio audio = 1;
 }
 
 // The top level message returned to the client by the <code>Detect</code> method.
 message DetectResponse {
-  // Result of deepfake detection. Will not be present if the audio is shorter than 3 seconds.
+  // Result of deepfake detection. Will not be present if the audio contains less than 3 seconds of continuous speech.
   optional DetectResult result = 1;
 
   // Total length of the processed audio.
