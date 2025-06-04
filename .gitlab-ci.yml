@@ -18,6 +18,9 @@ include:
   - '3.12'
   - '3.13'
 
+.build-cpp-package:
+  tags: [large]
+
 check-python-code-quality:
   parallel:
     matrix:

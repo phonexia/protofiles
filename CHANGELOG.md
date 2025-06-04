@@ -1,5 +1,9 @@
 # Phonexia gRPC application interface
 
+## 2.17.0 (2025-06-04)
+### Added
+- `AudioManipulationDetection` service in `phonexia.grpc.technologies.audio_manipulation_detection.experimental`
+
 # 2.16.2 (2025-05-20)
 ### Updated
 - Documentation for `phonexia.grpc.technologies.deepfake_detection.experimental.DetectResult.score` which is now LLR score
