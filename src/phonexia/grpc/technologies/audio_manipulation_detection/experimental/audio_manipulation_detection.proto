@@ -1,0 +1,78 @@
+// Copyright 2025 Phonexia s.r.o.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Phonexia Audio Manipulation Detection gRPC API.
+syntax = "proto3";
+
+package phonexia.grpc.technologies.audio_manipulation_detection.experimental;
+
+import "google/protobuf/duration.proto";
+import "phonexia/grpc/common/core.proto";
+
+// Service implementing audio manipulation detection.
+service AudioManipulationDetection {
+  // Detects audio manipulation.
+  rpc Detect (stream DetectRequest) returns (stream DetectResponse);
+}
+
+message DetectRequest {
+  // Audio data for audio manipulation detection.
+  // The audio should have minimum length of 0.645s seconds which is a length of one segment.
+  // If the audio is shorter, the <code>segments</code> array in the response will be empty.
+  phonexia.grpc.common.Audio audio = 1;
+
+  // Audio manipulation detection configuration.
+  DetectConfig config = 2;
+}
+
+message DetectConfig {
+  // When `raw_segmentation` is true, the audio is analyzed in overlapping segments of 0.645 seconds
+  // (with 50% overlap between consecutive segments). Each segment is independently classified as
+  // manipulated or genuine. Adjacent segments that are both classified as manipulated will NOT be
+  // merged, resulting in potentially redundant but more granular detections. When `raw_segmentation`
+  // is false (default), adjacent manipulated segments are consolidated into a single continuous
+  // segment to provide a cleaner output.
+  // Example: With `raw_segmentation=true`, if segments [0.0, 0.645] and [0.3225, 0.9675] are both 
+  // detected as manipulated, they will be reported as two separate segments despite their overlap.
+  // With `raw_segmentation=false`, these would be merged into a single segment [0.0, 0.9675].
+  bool raw_segmentation = 1;
+}
+
+// The top level message returned to the client by the <code>Detect</code> method.
+message DetectResponse {
+  // List of detected segments. Will be empty if the audio is shorter than 0.645 seconds.
+  repeated Segment segments = 1;
+
+  // Total length of the processed audio.
+  google.protobuf.Duration processed_audio_length = 2;
+}
+
+// Detected segment.
+message Segment {
+  // Score of the audio manipulation represented as a Log-likelihood ratio (LLR).
+  // A higher score indicates a higher likelihood of the audio being manipulated.
+  // The threshold is at score == 0. A score greater than 0 indicates that the audio
+  // may be manipulated, while a score less than 0 indicates that the audio is likely
+  // not manipulated.
+  // By default, only the segments containing manipulated audio (score > 0) are returned.
+  // If multiple adjacent segments contain manipulated audio, they are merged into
+  // a single segment. To change this behavior, set <code>DetectRequest.config.raw_segmentation</code>
+  float score = 1;
+
+  // Timestamp specifying the beginning of the segment.
+  google.protobuf.Duration start_time = 2;
+
+  // Timestamp specifying the end of the segment.
+  google.protobuf.Duration end_time = 3;
+}
