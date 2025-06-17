@@ -42,7 +42,7 @@ message EstimateRequest {
   
   // Audio data from which age is to be estimated.
   // The audio should have minimum length of at least 0.3 seconds. If the audio is shorter,
-  // the <code>result</code> will not be present in the output.
+  // the <code>age</code> field in the corresponding <code>EstimateResult</code> will not be set.
   phonexia.grpc.common.Audio audio = 2;
   
   // Configuration for the age estimation.
@@ -53,8 +53,8 @@ message EstimateRequest {
 message EstimateConfig {
   // Specifies the maximum speech length from which the age will be estimated.
   // If there is less speech in the audio than the specified duration, the age
-  // will be estimated from the entire audio. This option is applicable only for Audio
-  // data.
+  // will be estimated from the entire audio. This option is applicable only for
+  // Audio data.
   google.protobuf.Duration speech_length = 1;
 }
 
@@ -73,7 +73,7 @@ message EstimateResult {
 // messages.
 message EstimateResponse {
   // Sequential list of results corresponding to sequential list of voiceprints
-  // in <code>EstimateRequest</code>. Contains single result when using audio.
+  // in <code>EstimateRequest</code>. Contains a single result when using audio.
   repeated EstimateResult results = 1;
   
   // When available, total length of the processed audio.
