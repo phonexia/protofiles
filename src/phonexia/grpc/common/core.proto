@@ -24,10 +24,10 @@ import "google/protobuf/duration.proto";
 //  In the case of raw format, this message contains raw audio data that
 //  are encoded in a format specified in the configuration.
 //  The audio <code>content</code> is represented as raw audio if the
-//  <code>raw_audio_config</code> filed is specified.
+//  <code>raw_audio_config</code> field is specified.
 //
-//  In case that the <code>raw_audio_config</code> is not specified, this
-//  message contains audio data in one of the supported standard formats
+//  In case that the <code>raw_audio_config</code> field is not specified,
+//  this message contains audio data in one of the supported standard formats
 //  and encodings. Supported formats are <code>WAV</code> (various encodings),
 //  <code>FLAC</code>, and <code>OGG_OPUS</code>.
 //  For best results, the audio source should be captured and transmitted
@@ -36,6 +36,8 @@ import "google/protobuf/duration.proto";
 //  are used to capture or transmit audio, particularly if background noise
 //  is present. Lossy codecs include <code>ALAW</code>, <code>MULAW</code>,
 //  or <code>OGG_OPUS</code>.
+//  <em>Important: all Phonexia microservices that are audio-based, with the exception of
+//  <code>MediaNormalization</code>, only support mono-channel audio.</em>
 message Audio {
   // The audio data bytes encoded in the supported format. In case of raw
   // audio, this field does not include the audio header, but only the data.
@@ -74,15 +76,17 @@ message RawAudioConfig {
   int32 sample_rate_hertz = 2;
 
   // The number of channels in the audio data.
-  // <em>Note: some technologies only support mono-channel audio recordings.
-  // Setting this field to values other than 1 will result in an error for
-  // such technologies.</em>
+  // <em>Note: if not specified otherwise, technologies only support mono-channel
+  // audio recordings. Setting this field to values other than 1 will result in an
+  // error for such technologies.</em>
   int32 channels = 3;
 }
 
 // Represents the result from voiceprint extraction.
 message Voiceprint {
-  // Voiceprint data bytes encoded in UBJSON format.
+  // Voiceprint data bytes in one of the supported formats:
+  // - UBJSON (Speech Platform 4 native)
+  // - binary XL5 voiceprint (Speech Engine 3 native)
   bytes content = 1;
 }
 
