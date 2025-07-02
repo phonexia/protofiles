@@ -1,5 +1,9 @@
 # Phonexia gRPC application interface
 
+## 2.19.0 (2025-07-02)
+### Added
+- `SpeechToText` service in `phonexia.grpc.technologies.speech_to_text.v1`
+
 ## 2.18.0 (2025-06-17)
 ### Added
 - `ReplayAttackDetection` service in `phonexia.grpc.technologies.replay_attack_detection.experimental`
