@@ -1,5 +1,10 @@
 # Phonexia gRPC application interface
 
+## 2.20.0 (2025-07-17)
+### Added
+- `AudioQualityEstimation` service in `phonexia.grpc.technologies.audio_quality_estimation.v1`
+- `TimeAnalysis` service in `phonexia.grpc.technologies.time_analysis.v1`
+
 ## 2.19.0 (2025-07-02)
 ### Added
 - `SpeechToText` service in `phonexia.grpc.technologies.speech_to_text.v1`
