@@ -36,6 +36,19 @@ service VoiceprintExtraction {
   rpc Extract(stream ExtractRequest) returns (ExtractResponse);
 }
 
+// Service that implements voiceprint merging.
+service VoiceprintMerging {
+  // Merges a list of voiceprints into a single voiceprint. The new voiceprint
+  // is a combination of all voiceprints in the list. It uses a weighted arithmetic mean
+  // by weighting each voiceprint by its speech length.
+  // This method is intended for merging voiceprints of a single speaker,
+  // not for merging voiceprints from multiple different speakers.
+  // Note that the resulting voiceprint is not the same as the voiceprint
+  // extracted from a file created by concatenating all individual audio files
+  // into one, but it is very similar.
+  rpc Merge(MergeRequest) returns (MergeResponse);
+}
+
 // The message sent by the client for the <code>Compare</code> method.
 message CompareRequest {
   // First list of voiceprints to be compared.
@@ -99,4 +112,20 @@ message ExtractResponse {
   // When available, total length of the processed audio.
   // Set only if this is the last response in the stream.
   google.protobuf.Duration processed_audio_length = 2;
+}
+
+// The message sent by the client for the <code>Merge</code> method.
+message MergeRequest {
+  // List of voiceprints to be merged.
+  repeated phonexia.grpc.common.Voiceprint voiceprints = 1;
+}
+
+// The top-level message returned to the client by the <code>Merge</code>
+// method. It contains the merged voiceprint.
+message MergeResponse {
+  // Speech length of merged voiceprint. It's a sum of all input voiceprints' lengths.
+  google.protobuf.Duration speech_length = 1;
+
+  // Merged voiceprint.
+  phonexia.grpc.common.Voiceprint voiceprint = 2;
 }
