@@ -1,5 +1,9 @@
 # Phonexia gRPC application interface
 
+## 2.21.0 (2025-09-21)
+### Added
+- `VoiceprintMerging` service in `phonexia.grpc.technologies.speaker_identification.v1`
+
 ## 2.20.0 (2025-07-17)
 ### Added
 - `AudioQualityEstimation` service in `phonexia.grpc.technologies.audio_quality_estimation.v1`
