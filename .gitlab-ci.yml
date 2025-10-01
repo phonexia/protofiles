@@ -4,12 +4,12 @@ include:
     file:
       - /templates/build-cpp-package.yml
       - /templates/renovate.yml
-      - /templates/common.yml
       - /templates/publish-cpp-package.yml
       - /templates/python/build-python-proto-package.yml
       - /templates/python/check-python-code-quality.yml
       - /templates/python/check-python-version-compatibility.yml
       - /templates/python/publish-pypi-python-package.yml
+      - /templates/common.yml
 
 .PYTHON_VERSIONS: &PYTHON_VERSIONS
   - '3.9'
