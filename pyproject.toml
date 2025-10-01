@@ -42,7 +42,7 @@ grpc-stubs = "^1.53.0.2"
 
 [tool.poetry.group.dev.dependencies]
 grpcio-tools = "^1.59.2"
-ruff = "^0.11.0"
+ruff = "^0.13.0"
 
 [build-system]
 requires = ["poetry-core"]
