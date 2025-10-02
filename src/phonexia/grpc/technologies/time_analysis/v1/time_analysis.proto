@@ -32,7 +32,8 @@ service TimeAnalysis {
 message AnalyzeRequest {
   // Audio data for which Time Analysis should be performed.
   // Audio can be either mono or stereo. In case of mono, only the ChannelAnalysis
-  // message is returned.
+  // message is returned. At least 900 milliseconds of audio is required, otherwise
+  // the result will not contain any analyses.
   phonexia.grpc.common.Audio audio = 1;
 }
 

@@ -31,6 +31,8 @@ service AudioQualityEstimation {
 // method.
 message EstimateRequest {
   // Audio data for which Audio Quality Estimation should be performed.
+  // At least 1 millisecond of audio is required, otherwise the result will not contain
+  // any estimations.
   phonexia.grpc.common.Audio audio = 1;
 }
 
