@@ -15,7 +15,7 @@
 // Phonexia Deepfake Detection gRPC API.
 syntax = "proto3";
 
-package phonexia.grpc.technologies.deepfake_detection.experimental;
+package phonexia.grpc.technologies.deepfake_detection.v1;
 
 import "google/protobuf/duration.proto";
 import "phonexia/grpc/common/core.proto";

@@ -1,5 +1,9 @@
 # Phonexia gRPC application interface
 
+## 2.22.0 (unreleased)
+### Changed
+- `DeepfakeDetection` service moved from `phonexia.grpc.technologies.deepfake_detection.experimental` to `phonexia.grpc.technologies.deepfake_detection.v1`
+
 ## 2.21.0 (2025-09-21)
 ### Added
 - `VoiceprintMerging` service in `phonexia.grpc.technologies.speaker_identification.v1`
