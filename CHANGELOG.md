@@ -1,6 +1,6 @@
 # Phonexia gRPC application interface
 
-## 2.22.0 (unreleased)
+## 2.22.0 (2025-10-06)
 ### Changed
 - `DeepfakeDetection` service moved from `phonexia.grpc.technologies.deepfake_detection.experimental` to `phonexia.grpc.technologies.deepfake_detection.v1`
 
