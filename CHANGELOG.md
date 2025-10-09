@@ -1,5 +1,12 @@
 # Phonexia gRPC application interface
 
+## 2.23.0 (2025-10-09)
+### Added
+- `vector` message in `phonexia.grpc.common`
+- `VoiceprintConversion` service in `phonexia.grpc.technologies.speaker_identification.v1`
+- `enable_vector_voiceprint` field to `ExtractConfig` in `phonexia.grpc.technologies.speaker_identification.v1`
+- `vector_voiceprint` field to `ExtractResult` in `phonexia.grpc.technologies.speaker_identification.v1`
+
 ## 2.22.0 (2025-10-06)
 ### Changed
 - `DeepfakeDetection` service moved from `phonexia.grpc.technologies.deepfake_detection.experimental` to `phonexia.grpc.technologies.deepfake_detection.v1`
