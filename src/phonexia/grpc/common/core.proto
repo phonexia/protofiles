@@ -36,8 +36,9 @@ import "google/protobuf/duration.proto";
 //  are used to capture or transmit audio, particularly if background noise
 //  is present. Lossy codecs include <code>ALAW</code>, <code>MULAW</code>,
 //  or <code>OGG_OPUS</code>.
-//  <em>Important: all Phonexia microservices that are audio-based, with the exception of
-//  <code>MediaNormalization</code>, only support mono-channel audio.</em>
+//  <em>Important: all Phonexia microservices that are audio-based, with the
+//  exception of <code>MediaNormalization</code> and <code>TimeAnalysis</code>,
+//  only support mono-channel audio.</em>
 message Audio {
   // The audio data bytes encoded in the supported format. In case of raw
   // audio, this field does not include the audio header, but only the data.
@@ -101,6 +102,12 @@ message Matrix {
 
   // Sequential list of matrix values in row major format.
   repeated float values = 3;
+}
+
+// Data type representing a vector of float values.
+message Vector {
+  // Sequential list of vector values.
+  repeated float values = 1;
 }
 
 // Data type representing time range.

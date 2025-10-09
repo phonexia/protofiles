@@ -49,6 +49,14 @@ service VoiceprintMerging {
   rpc Merge(MergeRequest) returns (MergeResponse);
 }
 
+// Service that implements voiceprint conversion to vector database format.
+service VoiceprintConversion {
+  // Converts a voiceprint to a vector optimized for
+  // vector database usage. This enables efficient similarity search and
+  // storage in vector database systems.
+  rpc Convert(stream ConvertRequest) returns (stream ConvertResponse);
+}
+
 // The message sent by the client for the <code>Compare</code> method.
 message CompareRequest {
   // First list of voiceprints to be compared.
@@ -91,6 +99,10 @@ message ExtractConfig {
   // extracted. If there is less speech in the audio than the specified
   // duration, the voiceprint will be extracted from the entire audio.
   google.protobuf.Duration speech_length = 1;
+
+  // If set to true, the extraction result will contain both voiceprint
+  // and vector_voiceprint fields. If false (default), only voiceprint is returned.
+  bool enable_vector_voiceprint = 2;
 }
 
 // A voiceprint extraction result.
@@ -98,8 +110,14 @@ message ExtractResult {
   // Speech length from which the voiceprint was extracted.
   google.protobuf.Duration speech_length = 1;
 
-  // Extracted voiceprint.
+  // Extracted voiceprint is always included in the result.
   phonexia.grpc.common.Voiceprint voiceprint = 2;
+    
+  // Vector voiceprint optimized for vector databases.
+  // Included only if enable_vector_voiceprint is set to true in ExtractConfig.
+  // Use cosine distance to compare vector voiceprints in vector databases.
+  // Note: Will be empty if the input audio contains no speech.
+  phonexia.grpc.common.Vector vector_voiceprint = 3;
 }
 
 // The top-level message returned to the client by the <code>Extract</code>
@@ -128,4 +146,19 @@ message MergeResponse {
 
   // Merged voiceprint.
   phonexia.grpc.common.Voiceprint voiceprint = 2;
+}
+
+// The message sent by the client for the <code>Convert</code> method.
+message ConvertRequest {
+  // Voiceprints to be converted to vector database format.
+  repeated phonexia.grpc.common.Voiceprint voiceprints = 1;
+}
+
+// The top-level message returned to the client by the <code>Convert</code>
+// method. It contains the converted vectors.
+message ConvertResponse {
+  // Voiceprints converted to vector format for vector databases.
+  // Use cosine distance to compare vector voiceprints in vector databases.
+  // Note: Individual vectors will be empty for input voiceprints that contain no speech.
+  repeated phonexia.grpc.common.Vector vector_voiceprints = 1;
 }
