@@ -1,5 +1,9 @@
 # Phonexia gRPC application interface
 
+## 2.24.0 (2025-10-14)
+### Added
+- `ReferentialDeepfakeDetection` service in `phonexia.grpc.technologies.referential_deepfake_detection.v1`
+
 ## 2.23.0 (2025-10-09)
 ### Added
 - `vector` message in `phonexia.grpc.common`
