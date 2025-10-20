@@ -55,6 +55,17 @@ message DetectRequest {
   oneof questioned {
     phonexia.grpc.common.Audio audio_questioned = 4;
   }
+
+  // Optional configuration for the detection.
+  DetectConfig config = 7;
+}
+
+// Configuration for the referential deepfake detection.
+message DetectConfig {
+  // Maximum speech length to process from both reference and questioned audio.
+  // If set, only the first speech_length duration of speech will be processed
+  // from each audio. If not set, all available speech will be processed.
+  google.protobuf.Duration speech_length = 1;
 }
 
 // The top level message returned to the client by the <code>Detect</code>
