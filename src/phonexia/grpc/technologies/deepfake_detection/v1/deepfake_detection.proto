@@ -29,14 +29,25 @@ service DeepfakeDetection {
 // The top level message sent by the client for the <code>Detect</code> method.
 message DetectRequest {
   // Audio data for deepfake detection.
-  // The audio should contain at least 3 seconds of continuous speech. If there is not enough speech,
-  // the <code>result</code> will not be present in the output.
+  // The audio should contain at least 3 seconds of continuous speech.
+  // If there is not enough speech, the <code>result</code> will not be present
+  // in the output.
   phonexia.grpc.common.Audio audio = 1;
+
+  // Configuration for the deepfake detection
+  DetectConfig config = 2;
+}
+
+// Configuration for the deepfake detection.
+message DetectConfig {
+  // Maximum speech length to process from the audio.
+  google.protobuf.Duration speech_length = 1;
 }
 
 // The top level message returned to the client by the <code>Detect</code> method.
 message DetectResponse {
-  // Result of deepfake detection. Will not be present if the audio contains less than 3 seconds of continuous speech.
+  // Result of deepfake detection. Will not be present if the audio contains
+  // less than 3 seconds of continuous speech.
   optional DetectResult result = 1;
 
   // Total length of the processed audio.
@@ -50,4 +61,7 @@ message DetectResult {
   // a deepfake, while a value less than 0 indicates the audio is likely not a
   // deepfake.
   float score = 1;
+
+  // Total speech length the deepfake detector used for evaluation.
+  google.protobuf.Duration speech_length = 2;
 }

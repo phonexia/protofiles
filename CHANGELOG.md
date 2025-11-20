@@ -1,4 +1,8 @@
 # Phonexia gRPC application interface
+## 2.26.0 (2025-11-20)
+### Added
+- `DetectConfig` message with `speech_length` field in `phonexia.grpc.technologies.deepfake_detection.v1`
+- `speech_length` field to `DetectResult` in `phonexia.grpc.technologies.deepfake_detection.v1`
 
 ## 2.25.0 (2025-10-20)
 ### Added
