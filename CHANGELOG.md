@@ -1,4 +1,9 @@
 # Phonexia gRPC application interface
+## 2.27.0 (unreleased)
+### Added
+- File `google/rpc/status.proto` and `google/rpc/error_details.proto` from [Google's repository](https://github.com/googleapis/googleapis/blob/master/google/rpc/error_details.proto) removing the requirement to have googleapis dependency
+- Support for richer error model in `SpeechToText` service in `phonexia.grpc.technologies.speech_to_text.v1`
+
 ## 2.26.0 (2025-11-20)
 ### Added
 - `DetectConfig` message with `speech_length` field in `phonexia.grpc.technologies.deepfake_detection.v1`
