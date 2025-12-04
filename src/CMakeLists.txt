@@ -15,12 +15,11 @@ set(CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH
 set(CMAKE_FIND_USE_CMAKE_SYSTEM_PATH ${FIND_USE_CMAKE_SYSTEM_PATH_BACKUP})
 
 find_package(gRPC CONFIG REQUIRED)
-find_package(googleapis CONFIG REQUIRED)
 
 #
 # Protobuf/gRPC source files
 #
-file(GLOB_RECURSE PROTO_FILES "phonexia/grpc/*.proto")
+file(GLOB_RECURSE PROTO_FILES "phonexia/grpc/*.proto" "google/rpc/*.proto")
 
 message("PROTO_FILES = ${PROTO_FILES}")
 
@@ -28,8 +27,8 @@ message("PROTO_FILES = ${PROTO_FILES}")
 # Add Library target with protobuf sources
 #
 add_library(phonexia_grpc_public ${PROTO_FILES})
-target_link_libraries(phonexia_grpc_public PUBLIC protobuf::libprotobuf
-                                                  gRPC::grpc++_unsecure googleapis::googleapis)
+target_link_libraries(
+  phonexia_grpc_public PUBLIC protobuf::libprotobuf gRPC::grpc++_unsecure)
 
 set(PROTO_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/generated")
 set(PROTO_IMPORT_DIRS "${CMAKE_CURRENT_LIST_DIR}")
