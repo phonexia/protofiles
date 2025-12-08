@@ -1,8 +1,8 @@
 # Phonexia gRPC application interface
-## 2.27.0 (unreleased)
+## 2.27.0 (2025-12-08)
 ### Added
 - File `google/rpc/status.proto` and `google/rpc/error_details.proto` from [Google's repository](https://github.com/googleapis/googleapis/blob/master/google/rpc/error_details.proto) removing the requirement to have googleapis dependency
-- Support for richer error model in `SpeechToText` service in `phonexia.grpc.technologies.speech_to_text.v1`
+- Support for richer error model in `SpeechToText` service in `phonexia.grpc.technologies.speech_to_text.v1` (see [Error handling](https://docs.cloud.phonexia.com/products/speech-platform-4/microservices/guides/error-handling) for more details)
 
 ## 2.26.0 (2025-11-20)
 ### Added
