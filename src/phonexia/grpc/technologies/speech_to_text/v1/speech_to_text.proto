@@ -49,24 +49,26 @@ import "google/protobuf/duration.proto";
 // * "config.preferred_phrases[5]" - Error in the sixth preferred phrase
 //
 // Example error response when a preferred phrase contains an unsupported character:
-//
-//     code: INVALID_ARGUMENT
-//     message: "Invalid argument"
-//     details: [
-//       ErrorInfo {
-//         reason: "INPUT_ERROR"
-//         domain: "speech-to-text.phonexia"
-//       },
-//       BadRequest {
-//         field_violations: [
-//           {
-//             field: "config.preferred_phrases[1]"
-//             description: "Invalid grapheme 'é' in preferred phrase 'café'"
-//             reason: "UNSUPPORTED_GRAPHEME"
-//           }
-//         ]
+// ```
+// code: INVALID_ARGUMENT
+// message: "Invalid argument"
+// details: [
+//   ErrorInfo {
+//     reason: "INPUT_ERROR"
+//     domain: "speech-to-text.phonexia"
+//   },
+//   BadRequest {
+//     field_violations: [
+//       {
+//         field: "config.preferred_phrases[1]"
+//         description: "Invalid grapheme 'é' in preferred phrase 'café'"
+//         reason: "UNSUPPORTED_GRAPHEME"
 //       }
 //     ]
+//   }
+// ]
+// ```
+// See [Error handling](https://docs.cloud.phonexia.com/products/speech-platform-4/microservices/guides/error-handling) documentation for more information.
 //
 service SpeechToText {
   // Performs synchronous speech-to-text transcription.
