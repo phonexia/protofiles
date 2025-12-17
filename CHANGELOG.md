@@ -1,4 +1,8 @@
 # Phonexia gRPC application interface
+## 2.27.1 (2025-12-17)
+### Fixed
+- `MatchedKeyword.PronunciationSource` in `phonexia.grpc.technologies.keyword_spotting.v1` may be `PARTLY_GENERATED` instead of `USER` if the keyword contains multiple words separated by the word separator
+
 ## 2.27.0 (2025-12-08)
 ### Added
 - File `google/rpc/status.proto` and `google/rpc/error_details.proto` from [Google's repository](https://github.com/googleapis/googleapis/blob/master/google/rpc/error_details.proto) removing the requirement to have googleapis dependency
