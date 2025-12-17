@@ -28,17 +28,17 @@ import "google/protobuf/duration.proto";
 //
 //  In case that the <code>raw_audio_config</code> field is not specified,
 //  this message contains audio data in one of the supported standard formats
-//  and encodings. Supported formats are <code>WAV</code> (various encodings),
-//  <code>FLAC</code>, and <code>OGG_OPUS</code>.
+//  and encodings. Supported formats are <code>WAV</code> (various encodings)
+//  and <code>FLAC</code>.
 //  For best results, the audio source should be captured and transmitted
 //  using a lossless encoding (<code>FLAC</code> or <code>LINEAR16</code>).
 //  The accuracy of the speech technologies can be reduced if lossy codecs
 //  are used to capture or transmit audio, particularly if background noise
-//  is present. Lossy codecs include <code>ALAW</code>, <code>MULAW</code>,
-//  or <code>OGG_OPUS</code>.
+//  is present. Lossy codecs include <code>ALAW</code> or <code>MULAW</code>
 //  <em>Important: all Phonexia microservices that are audio-based, with the
 //  exception of <code>MediaNormalization</code> and <code>TimeAnalysis</code>,
 //  only support mono-channel audio.</em>
+//  See https://docs.phonexia.com/products/speech-platform-4/microservices/audio-formats
 message Audio {
   // The audio data bytes encoded in the supported format. In case of raw
   // audio, this field does not include the audio header, but only the data.

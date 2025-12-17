@@ -35,14 +35,14 @@ priority = "primary"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-grpcio = "^1.59.0"
-protobuf = "^5.0.0"
+grpcio = "^1.75.0"
+protobuf = "^6.0.0"
 mypy-protobuf = "^3.5.0"
 grpc-stubs = "^1.53.0.2"
 
 [tool.poetry.group.dev.dependencies]
-grpcio-tools = "^1.59.2"
-ruff = "^0.14.0"
+grpcio-tools = "^1.75.0"
+ruff = "^0.13.0"
 
 [build-system]
 requires = ["poetry-core"]
