@@ -161,12 +161,14 @@ enum ItemType {
   // <code>ITEM_TYPE_SEGMENT_START</code> indicates the start of a segment.
   // A segment is a part of the recording that contains speech,
   // as determined by the Voice Activity Detector (VAD).
+  // This type appears only in confusion network results.
   // The <code>text</code> field of the item contains "&lt;segment&gt;".
   ITEM_TYPE_SEGMENT_START = 2;
 
   // <code>ITEM_TYPE_SEGMENT_END</code> indicates the end of a segment.
   // A segment is a part of the recording that contains speech,
   // as determined by the Voice Activity Detector (VAD).
+  // This type appears only in confusion network results.
   // The <code>text</code> field of the item contains "&lt;/segment&gt;".
   ITEM_TYPE_SEGMENT_END = 3;
 
