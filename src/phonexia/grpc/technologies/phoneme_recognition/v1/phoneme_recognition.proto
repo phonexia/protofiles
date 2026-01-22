@@ -1,0 +1,55 @@
+// Copyright 2026 Phonexia s.r.o.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Phonexia Phoneme Recognition gRPC API.
+syntax = "proto3";
+
+package phonexia.grpc.technologies.phoneme_recognition.v1;
+
+import "google/protobuf/duration.proto";
+import "phonexia/grpc/common/core.proto";
+
+// Service implementing phoneme recognition.
+service PhonemeRecognition {
+  // Performs phoneme recognition on the audio data.
+  // Returns a stream of recognition results.
+  rpc Recognize(stream RecognizeRequest) returns (stream RecognizeResponse);
+}
+
+// The top-level message sent by the client for the <code>Recognize</code> method.
+message RecognizeRequest {
+  // Audio data to process. There is no minimum audio length limit.
+  phonexia.grpc.common.Audio audio = 1;
+}
+
+// The top-level message returned to the client by the <code>Recognize</code> method.
+message RecognizeResponse {
+  // List of recognized phonemes with their time boundaries.
+  repeated PhonemeSegment phoneme_segments = 1;
+
+  // Total length of processed audio.
+  google.protobuf.Duration processed_audio_length = 2;
+}
+
+// A single phoneme segment with timing information.
+message PhonemeSegment {
+  // The recognized phoneme.
+  string phoneme = 1;
+
+  // Start time of the phoneme in the audio.
+  google.protobuf.Duration start_time = 2;
+
+  // End time of the phoneme in the audio.
+  google.protobuf.Duration end_time = 3;
+}
