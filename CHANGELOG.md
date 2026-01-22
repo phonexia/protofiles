@@ -1,4 +1,10 @@
 # Phonexia gRPC application interface
+
+## 2.28.0 (2026-01-22)
+### Added
+- `phonexia.grpc.technologies.phoneme_recognition.v1.PhonemeRecognition` service
+- `phonexia.grpc.technologies.grapheme_to_phoneme_conversion.v1.GraphemeToPhonemeConversion` service
+
 ## 2.27.1 (2025-12-17)
 ### Fixed
 - `MatchedKeyword.PronunciationSource` in `phonexia.grpc.technologies.keyword_spotting.v1` may be `PARTLY_GENERATED` instead of `USER` if the keyword contains multiple words separated by the word separator
