@@ -38,4 +38,6 @@ message GetStatusResponse {
   map<string, google.protobuf.Any> configuration = 3;
   // The model information.
   optional ModelInfo model_info = 4;
+  // The name of the technology.
+  string technology_name = 5;
 }

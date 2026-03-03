@@ -1,5 +1,10 @@
 # Phonexia gRPC application interface
 
+## 2.29.0 (2026-03-03)
+### Added
+- `technology_name` field added to `phonexia.grpc.common.GetStatusResponse`
+
+
 ## 2.28.0 (2026-01-22)
 ### Added
 - `phonexia.grpc.technologies.phoneme_recognition.v1.PhonemeRecognition` service
