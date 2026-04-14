@@ -3,7 +3,6 @@ include:
     ref: main
     file:
       - /templates/build-cpp-package.yml
-      - /templates/renovate.yml
       - /templates/publish-cpp-package.yml
       - /templates/python/build-python-proto-package.yml
       - /templates/python/check-python-code-quality.yml
