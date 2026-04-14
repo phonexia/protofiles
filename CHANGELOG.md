@@ -1,5 +1,10 @@
 # Phonexia gRPC application interface
 
+## 2.30.0 (2026-04-14)
+### Added
+- `phonexia.grpc.technologies.media_processing.v1.MediaProcessing` service
+
+
 ## 2.29.0 (2026-03-03)
 ### Added
 - `technology_name` field added to `phonexia.grpc.common.GetStatusResponse`
