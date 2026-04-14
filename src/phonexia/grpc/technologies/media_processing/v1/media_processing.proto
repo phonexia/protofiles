@@ -1,0 +1,214 @@
+// Copyright 2026 Phonexia s.r.o.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Phonexia Media Processing gRPC API.
+syntax = "proto3";
+
+package phonexia.grpc.technologies.media_processing.v1;
+
+import "phonexia/grpc/common/core.proto";
+import "google/protobuf/duration.proto";
+
+// Service that implements media manipulation operations to be used with other
+// Phonexia's microservices.
+service MediaProcessing {
+  // Performs synchronous media conversion. Returns a result after media data
+  // is completely received and processed.
+  rpc Convert(stream ConvertRequest) returns (stream ConvertResponse);
+  // Performs synchronous audio merging. This method accepts multiple audio
+  // streams to be merged into a single stream. Each input stream becomes
+  // a channel in the output stream. The order of the streams is preserved.
+  // Returns a result after data is completely received and processed.
+  rpc Merge(stream MergeRequest) returns (stream MergeResponse);
+  // Performs synchronous audio splitting based on a segmentation. This is the inverse
+  // of the <code>Merge</code> operation. This method takes a single audio stream and
+  // produces a separate output channel for each unique tag in the segmentation by
+  // taking the original samples from the time intervals assigned to the tag and filling
+  // the gaps between segments with dithered noise. This low-level noise (typically
+  // perceived as silence by the human ear) is added to align the resulting audio with
+  // data used for training Phonexia technology models.
+  //
+  // The output format is controlled by <code>SplitConfig.OutputMode</code>:
+  // - <code>MULTICHANNEL</code>: returns a single multichannel audio where
+  //   each channel corresponds to a unique tag.
+  // - <code>SEPARATE</code>: returns multiple mono audio streams, each
+  //   identified by a tag, streamed one after another.
+  //
+  // Returns results after data is completely received and processed.
+  rpc Split(stream SplitRequest) returns (stream SplitResponse);
+}
+
+// The top-level message sent by the client for the <code>Convert</code> method.
+message ConvertRequest {
+  // Audio to be converted (may contain multiple channels).
+  // There is no minimum audio length limit.
+  phonexia.grpc.common.Audio audio = 1;
+
+  // Media conversion configuration.
+  ConvertConfig config = 2;
+}
+
+message ConvertConfig {
+  // <code>ChannelMode</code> specifies how multichannel audio will be treated
+  // during the conversion process.
+  enum ChannelMode {
+    // Mix input channels into a single mono audio stream.
+    MIX = 0;
+    // Separate input channels into multiple mono audio streams.
+    SPLIT = 1;
+    // Don't mix nor split channels. Keep only the channels specified in the
+    // <code>channels</code> field.
+    KEEP = 2;
+  }
+
+  // Channel mode to be used during the conversion.
+  ChannelMode channel_mode = 1;
+
+  // If an array of channels is provided, the microservice will ignore those
+  // that are not listed.
+  // All channels are processed if this field is not set.
+  repeated int32 channels = 2;
+}
+
+// The conversion result.
+message ConvertResult {
+  // Converted audio.
+  phonexia.grpc.common.Audio audio = 1;
+
+  // Zero-indexed channel tag. It denotes distinct streams of resulting
+  // audio, not the original channels of the input audio.
+  // In MIX and KEEP modes it's just a single stream (denoted by tag
+  // <code>0</code>).
+  // In SPLIT mode, there are multiple streams, one for each requested input
+  // channel. The streams are returned in the order they are requested
+  // in the <code>channels</code> parameter and are tagged with the original
+  // channel sequence numbers.
+  int32 tag = 2;
+}
+
+// Message returned to the client by the <code>Convert</code> method.
+message ConvertResponse {
+  //  Result containing converted audio data streams. Each result contains
+  //  the converted stream data and its tag. In case of multiple output streams,
+  //  data of each stream is exhausted first before moving to the next one.
+  ConvertResult result = 1;
+}
+
+// The top-level message sent by the client for the <code>Merge</code> method.
+// Each input audio stream to be merged is identified by a distinct tag. In
+// case of multiple input streams, data of each stream is expected to be
+// exhausted first before moving to the next one.
+message MergeRequest {
+  // Audio to be merged. There is no minimum audio length limit.
+  phonexia.grpc.common.Audio audio = 1;
+
+  // Zero-indexed channel tag. It denotes distinct input streams of audio.
+  int32 tag = 2;
+}
+
+// The merge result.
+message MergeResult {
+  // Merged audio. The audio has the same total duration as the longest stream in the
+  // input.
+  phonexia.grpc.common.Audio audio = 1;
+}
+
+// Message returned to the client by the <code>Merge</code> method.
+message MergeResponse {
+  //  Result containing merged audio data stream.
+  MergeResult result = 1;
+}
+
+// A message describing to which output stream a time interval belongs.
+message Segment {
+  // Identifier of the output channel this segment belongs to.
+  // Segments with the same tag will be placed into the same output channel.
+  // This value typically corresponds to a <code>speaker_id</code> from
+  // speaker diarization or a fixed value (e.g., 0) for voice activity detection.
+  int32 tag = 1;
+
+  // Start time of the segment within the input audio.
+  google.protobuf.Duration start_time = 2;
+
+  // End time of the segment within the input audio.
+  google.protobuf.Duration end_time = 3;
+}
+
+// Split configuration.
+message SplitConfig {
+  // <code>OutputMode</code> specifies the format of the split output.
+  enum OutputMode {
+    // Combine all output channels into a single multichannel audio stream.
+    // Each unique <code>Segment.tag</code> becomes a channel in the output.
+    // Channels are ordered by tag value (ascending). The <code>tag</code>
+    // field in <code>SplitResult</code> is not set in this mode.
+    MULTICHANNEL = 0;
+    // Return each output channel as a separate mono audio stream.
+    // Each unique <code>Segment.tag</code> produces a distinct stream
+    // identified by the <code>tag</code> field in <code>SplitResult</code>.
+    // Data of each stream is exhausted first before moving to the next one.
+    SEPARATE = 1;
+  }
+
+  // Output mode to be used for the split result.
+  OutputMode output_mode = 1;
+
+  // List of segments defining how to split the audio into output channels.
+  // Each unique <code>tag</code> in the segments produces a separate output channel.
+  // Time ranges not covered by any segment for a given tag are filled with silence
+  // in that tag's output. Segments that belong to separate tags may overlap in time
+  // (e.g., overlapping speech).
+  //
+  // The segments can be derived from:
+  // - <code>phonexia.grpc.technologies.speaker_diarization.v1.DiarizeResponse</code>:
+  //   map each diarization segment's <code>speaker_id</code> to <code>Segment.tag</code>.
+  // - <code>phonexia.grpc.technologies.voice_activity_detection.v1.DetectResponse</code>:
+  //   map each voice segment to a <code>Segment</code> with a constant tag (e.g., 0).
+  repeated Segment segments = 2;
+}
+
+// The top-level message sent by the client for the <code>Split</code> method.
+message SplitRequest {
+  // Audio to be split. There is no minimum audio length limit.
+  // The audio must be mono. For multichannel audio, use <code>Convert</code>
+  // with <code>ChannelMode.MIX</code> first.
+  phonexia.grpc.common.Audio audio = 1;
+
+  // Split configuration.
+  SplitConfig config = 2;
+}
+
+// The split result.
+message SplitResult {
+  // Audio data for the output.
+  // In <code>MULTICHANNEL</code> mode, this contains a single multichannel
+  // audio where each channel corresponds to a unique tag from the input
+  // segments. The audio has the same total duration as the input.
+  // In <code>SEPARATE</code> mode, this contains one mono stream for each output
+  // channel. The audios have the same total duration as the input, with dithering
+  // between segments.
+  // The data of each stream is exhausted first before moving to the next one.
+  phonexia.grpc.common.Audio audio = 1;
+
+  // The tag identifying this output channel. Corresponds to the
+  // <code>Segment.tag</code> values from the input segments.
+  // Only set in <code>SEPARATE</code> mode.
+  int32 tag = 2;
+}
+
+// Message returned to the client by the <code>Split</code> method.
+message SplitResponse {
+  // Result containing split audio data.
+  SplitResult result = 1;
+}

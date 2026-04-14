@@ -13,7 +13,7 @@ class PhonexiaGrpcProtobuf(ConanFile):
     license = "Apache License 2.0"
     settings = "os", "compiler", "build_type", "arch"
     generators = ["CMakeDeps", "CMakeToolchain"]
-    exports_sources = ["CmakeLists.txt", "src/**"]
+    exports_sources = ["CMakeLists.txt", "src/**"]
     options = {"shared": [True, False], "fPIC": [True, False]}
     default_options = {
         "shared": False, 
