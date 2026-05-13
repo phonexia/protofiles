@@ -1,9 +1,5 @@
 # Phonexia gRPC application interface
 
-## 2.31.0 (2026-05-13)
-### Added
-- `billing_counters` field to `phonexia.grpc.common.LicensingInfoResult`
-
 ## 2.30.0 (2026-04-14)
 ### Added
 - `phonexia.grpc.technologies.media_processing.v1.MediaProcessing` service
