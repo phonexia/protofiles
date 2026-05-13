@@ -17,6 +17,8 @@ syntax = "proto3";
 
 package phonexia.grpc.common;
 
+import "google/protobuf/timestamp.proto";
+
 // Service that implements licensing provider.
 service Licensing {
   // Returns information about the license.
@@ -38,6 +40,14 @@ message LicensingInfoResult {
   ModelInfo model_info = 4;
   // License flags
   map<string, string> license_flags = 5;
+  // Billing counters for this microservice's technology.
+  // Only populated when counter-based billing is active, i.e. when the
+  // microservice is using a floating license served by the LM-X license server.
+  // Node-locked and non-billing licenses leave this field empty.
+  // Only the counters relevant to this microservice's technology are included;
+  // counters for other technologies held by the same LM-X server are not
+  // exposed here.
+  repeated BillingCounter billing_counters = 6;
 }
 
 message ModelInfo {
@@ -45,4 +55,21 @@ message ModelInfo {
   string name = 1;
   // Version of the model.
   string version = 2;
+}
+
+message BillingCounter {
+    // Counter name
+    string name = 1;
+    // Current usage of the counter
+    uint32 usage = 2;
+    // Maximum capacity of the counter
+    uint32 capacity = 3;
+    // Whether the counter is exhausted
+    bool is_exhausted = 4;
+    // Reset period (typically "month")
+    string reset_period = 5;
+    // Timestamp of the current period start date
+    google.protobuf.Timestamp period_start = 6;
+    // Timestamp of the current period end date
+    google.protobuf.Timestamp period_end = 7;
 }
