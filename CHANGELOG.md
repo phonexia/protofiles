@@ -1,5 +1,12 @@
 # Phonexia gRPC application interface
 
+## 2.31.0 (2026-05-19)
+### Added
+- `phonexia.grpc.common.beta.Licensing` service with billing counters support for floating licenses
+  - Added `billing_counters` field to `LicensingInfoResult` for counter-based billing information
+  - Added `BillingCounter` and `CurrentPeriod` messages for detailed billing data
+  - Added `valid_until_timestamp` field as replacement for deprecated `valid_until` field
+
 ## 2.30.0 (2026-04-14)
 ### Added
 - `phonexia.grpc.technologies.media_processing.v1.MediaProcessing` service
