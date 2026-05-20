@@ -1,0 +1,94 @@
+// Copyright 2026 Phonexia s.r.o.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Phonexia licensing definitions for gRPC API.
+//
+// WARNING: This is a beta API that is subject to change and may not be stable.
+// The API, its behavior, and the underlying protobuf definitions may be modified
+// or removed without notice. Use of this beta API in production environments is
+// strongly discouraged. For production use, please use the stable licensing API
+// located in phonexia/grpc/common/licensing.proto.
+
+syntax = "proto3";
+
+package phonexia.grpc.common.beta;
+
+import "google/protobuf/timestamp.proto";
+
+// Service that implements licensing provider.
+service Licensing {
+  // Returns information about the license.
+  rpc Info (LicensingInfoRequest) returns (LicensingInfoResult);
+}
+
+message LicensingInfoRequest {}
+
+// The top-level message returned to the client by <code>LicenseInfo</code>
+// method.
+message LicensingInfoResult {
+  // Validity of a license in YYYY-MM-DD format according to ISO 8601.
+  // Deprecated: use valid_until_timestamp instead.
+  string valid_until = 1 [deprecated = true];
+  // License status, contains "false" if the license has expired.
+  bool is_valid = 2;
+  // Name of the technology being licensed.
+  string technology_name = 3;
+  // Information about the licensed model.
+  ModelInfo model_info = 4;
+  // License flags
+  map<string, string> license_flags = 5;
+  // Validity of a license as a timestamp.
+  google.protobuf.Timestamp valid_until_timestamp = 6;
+  // Billing counters for this microservice's technology.
+  // Only populated when counter-based billing is active, i.e. when the
+  // microservice is using a floating license served by the LM-X license server.
+  // Node-locked and non-billing licenses leave this field empty.
+  // Only the counters relevant to this microservice's technology are included;
+  // counters for other technologies held by the same LM-X server are not
+  // exposed here.
+  repeated BillingCounter billing_counters = 7;
+}
+
+message ModelInfo {
+  // Name of the model.
+  string name = 1;
+  // Version of the model.
+  string version = 2;
+}
+
+message BillingCounter {
+    // Counter name
+    string name = 1;
+    // Human-readable unit for values accumulated by this counter (e.g. `"seconds"`).
+    string unit = 2;
+    // Current consumption of the counter
+    uint32 consumed = 3;
+    // Maximum capacity of the counter
+    uint32 capacity = 4;
+    // Whether the counter is unlimited (consumed value is not tracked)
+    bool unlimited = 5;
+    // Whether the counter has any remaining capacity
+    bool has_remaining_capacity = 6;
+    // Current period of the counter
+    CurrentPeriod current_period = 7;
+}
+
+message CurrentPeriod {
+    // Reset period (usually "month" in production)
+    string period = 1;
+    // Timestamp of the current period start date
+    google.protobuf.Timestamp start_time = 2;
+    // Timestamp of the current period end date
+    google.protobuf.Timestamp end_time = 3;
+}
