@@ -80,7 +80,7 @@ message DetectResponse {
 
 // Message representing the result of referential deepfake detection.
 message DetectResult {
-  // Score of the referential deepfake detection. A higher score indicates a higher 
+  // Score of the referential deepfake detection. A higher score indicates a higher
   // likelihood of the questioned data being a deepfake. The score is a floating-point
   // value. While technically limited by floating-point representation,
   // scores are typically within a certain range that varies model to model.

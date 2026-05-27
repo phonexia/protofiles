@@ -41,7 +41,7 @@ message RecognizeRequest {
 
 // The configuration message for the <code>Recognize</code> method.
 message RecognizeConfig {
-    // Specifies the maximum speech length from which the emotions will be recognized. 
+    // Specifies the maximum speech length from which the emotions will be recognized.
     // If there is less speech in the audio than the specified
     // duration, the emotions will be recognized from the entire audio.
     google.protobuf.Duration speech_length = 1;

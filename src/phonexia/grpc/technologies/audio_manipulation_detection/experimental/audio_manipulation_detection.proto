@@ -43,7 +43,7 @@ message DetectConfig {
   // merged, resulting in potentially redundant but more granular detections. When `raw_segmentation`
   // is false (default), adjacent manipulated segments are consolidated into a single continuous
   // segment to provide a cleaner output.
-  // Example: With `raw_segmentation=true`, if segments [0.0, 0.645] and [0.3225, 0.9675] are both 
+  // Example: With `raw_segmentation=true`, if segments [0.0, 0.645] and [0.3225, 0.9675] are both
   // detected as manipulated, they will be reported as two separate segments despite their overlap.
   // With `raw_segmentation=false`, these would be merged into a single segment [0.0, 0.9675].
   bool raw_segmentation = 1;

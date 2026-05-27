@@ -35,10 +35,10 @@ service GenderIdentification {
 message IdentifyRequest {
   // List of voiceprints for the identification.
   repeated phonexia.grpc.common.Voiceprint voiceprints = 1;
-  
+
   // Audio data in which gender is to be identified. There is no minimum audio length limit.
   phonexia.grpc.common.Audio audio = 2;
-  
+
   // Configuration for the gender identification.
   IdentifyConfig config = 3;
 }
@@ -58,7 +58,7 @@ message Score {
   // to another.
   // A positive LLR suggests that the respective model is more likely to be
   // supported by the data than the other model, while the negative LLR suggests
-  // the opposite. 
+  // the opposite.
   float score_llr = 1;
   // Decimal value between 0.0 and 1.0, representing a probability.
   float probability = 2;
@@ -68,10 +68,10 @@ message Score {
 message IdentifyResult {
   // Score for male. Not set if file is empty or doesn't contain enough speech.
   optional Score score_male = 1;
-  
+
   // Score for female. Not set if file is empty or doesn't contain enough speech.
   optional Score score_female = 2;
-  
+
   // Total speech length from which the gender were recognized.
   google.protobuf.Duration speech_length = 3;
 }
@@ -83,7 +83,7 @@ message IdentifyResponse {
   // Sequential list of results corresponding to sequential list of voiceprints
   // in <code>IdentifyRequest</code>. Contains single result when using audio.
   repeated IdentifyResult results = 1;
-  
+
   // When available, total length of the processed audio.
   // Set only if audio is used in <code>IdentifyRequest</code>.
   google.protobuf.Duration processed_audio_length = 2;

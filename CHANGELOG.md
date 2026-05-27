@@ -1,5 +1,9 @@
 # Phonexia gRPC application interface
 
+## 2.31.1 (unreleased)
+### Fixed
+- Minor documentation fixes
+
 ## 2.31.0 (2026-05-19)
 ### Added
 - `phonexia.grpc.common.beta.Licensing` service with billing counters support for floating licenses
@@ -117,7 +121,7 @@
 ### Added
 - Support for audio processing in `phonexia.grpc.technologies.gender_identification.v1`
 ### Changed
-- `IdentifyResult.score_male` and `IdentifyResult.score_female` are optional in `phonexia.grpc.technologies.gender_identification.v1` 
+- `IdentifyResult.score_male` and `IdentifyResult.score_female` are optional in `phonexia.grpc.technologies.gender_identification.v1`
   (they are not set for empty/short audio or voiceprint created from empty/short audio)
 
 ## 2.10.0 (2025-01-20)

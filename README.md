@@ -2,7 +2,7 @@
 
 # Phonexia gRPC protofiles repository
 
-This repository contains defined interfaces for [microservices](https://docs.cloud.phonexia.com/docs/category/technologies) developed by [Phonexia](https://phonexia.com). 
+This repository contains defined interfaces for [microservices](https://docs.cloud.phonexia.com/docs/category/technologies) developed by [Phonexia](https://phonexia.com).
 
 * Maintained by [Phonexia](https://phonexia.com)
 * Contact us via [e-mail](mailto:info@phonexia.com), or open a ticket at the [Phonexia Service Desk](https://phonexia.atlassian.net/servicedesk/customer/portal/15/group/20/create/40)

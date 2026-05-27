@@ -40,7 +40,7 @@ message DetectRequest {
 message DetectResponse {
   // Total speech length detected in the audio.
   google.protobuf.Duration speech_length = 1;
-  
+
   // List of detected voice segments. Will be empty if the audio is shorter than 0.8 seconds.
   repeated Segment segments = 2;
 

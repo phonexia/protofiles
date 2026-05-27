@@ -18,6 +18,7 @@ syntax = "proto3";
 package phonexia.grpc.common;
 
 import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
 
 //  Audio message in either raw or one of the standard formats.
 //
@@ -117,4 +118,13 @@ message TimeRange {
 
   // End time of the time range.
   google.protobuf.Duration end = 2;
+}
+
+// Data type representing timestamp range.
+message TimestampRange {
+  // Timestamp specifying the beginning of the range.
+  google.protobuf.Timestamp start = 1;
+
+  // Timestamp specifying the end of the range.
+  google.protobuf.Timestamp end = 2;
 }

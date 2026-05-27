@@ -204,14 +204,14 @@ message OneBestSegment {
   // Note: If a specific <code>source_language</code> was enforced in the config,
   // this field is the same as that specified language.
   string source_language = 5;
-  
+
   // The detected language of the audio data as an RFC 5646 language tag.
   // This field contains the language that whisper detected as the source language of the audio data.
   // This field may not equal to <code>source_language</code> in case the audio data is in different
   // language than from the set of licensed languages.
   // Always check if this field is equal to <code>source_language</code>.
   string detected_source_language = 6;
-  
+
   // Detailed word-level segmentation of the segment.
   repeated Word words = 7;
 }

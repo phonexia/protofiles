@@ -33,8 +33,7 @@ service GraphemeToPhonemeConversion {
 message ConvertRequest {
   // List of words written in graphemes.
   // Only supported graphemes, listed by <code>ListAllowedGraphemes</code>, can be used.
-  // The words may contain multiple sub-words separated by the '+' symbol
-  // (e.g. "hello+world").
+  // A word may contain multiple words separated by the '+' symbol (e.g. "hello+world").
   repeated string words = 1;
 }
 
