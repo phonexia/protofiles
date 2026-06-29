@@ -1,6 +1,6 @@
 # Phonexia gRPC application interface
 
-## 2.31.1 (unreleased)
+## 2.31.1 (2026-06-29)
 ### Fixed
 - Minor documentation fixes
 
