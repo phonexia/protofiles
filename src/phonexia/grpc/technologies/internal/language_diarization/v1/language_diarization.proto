@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package phonexia.grpc.technologies.internal.language_diarization.v1;
+
+import "phonexia/grpc/common/core.proto";
+import "google/protobuf/duration.proto";
+
+// One streamed chunk of a Diarize call; the audio is reassembled by
+// concatenating `audio.content` across all requests in the stream.
+message DiarizeRequest {
+  phonexia.grpc.common.Audio audio = 1;
+}
+
+// The result of diarizing one complete audio stream.
+message DiarizeResponse {
+  // Number of distinct languages detected among `segments` (not the full model vocabulary size).
+  int32 languages_count = 1;
+  repeated Segment segments = 2;
+}
+
+message Segment {
+  string language_code = 1;
+  google.protobuf.Duration start_time = 2;
+  google.protobuf.Duration end_time = 3;
+}
+
+service LanguageDiarization {
+  // Performs synchronous language diarization of an audio. Returns a result
+  // after completely sent and processed audio.
+  rpc Diarize(stream DiarizeRequest) returns (DiarizeResponse);
+}

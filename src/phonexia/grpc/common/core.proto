@@ -37,7 +37,7 @@ import "google/protobuf/timestamp.proto";
 //  are used to capture or transmit audio, particularly if background noise
 //  is present. Lossy codecs include <code>ALAW</code> or <code>MULAW</code>
 //  <em>Important: all Phonexia microservices that are audio-based, with the
-//  exception of <code>MediaNormalization</code> and <code>TimeAnalysis</code>,
+//  exception of <code>MediaProcessing</code> and <code>TimeAnalysis</code>,
 //  only support mono-channel audio.</em>
 //  See https://docs.phonexia.com/products/speech-platform-4/microservices/audio-formats
 message Audio {

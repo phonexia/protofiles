@@ -48,6 +48,8 @@ message ConvertResponse {
 message WordPronunciations {
 
   // The source word to which the pronunciations belong.
+  // Note: depending on the model, the returned word may differ in casing from the original input —
+  // some models apply a character mapping (typically uppercase to lowercase) before processing.
   string word = 1;
 
   // List of possible pronunciations for the word.

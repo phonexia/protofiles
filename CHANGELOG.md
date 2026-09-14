@@ -1,5 +1,9 @@
 # Phonexia gRPC application interface
 
+## 2.31.2 (2026-09-14)
+### Removed
+- `ReferentialDeepfakeDetection` service in `phonexia.grpc.technologies.referential_deepfake_detection.v1`
+
 ## 2.31.1 (2026-06-29)
 ### Fixed
 - Minor documentation fixes
