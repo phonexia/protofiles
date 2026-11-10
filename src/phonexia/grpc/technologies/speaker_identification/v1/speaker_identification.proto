@@ -34,6 +34,12 @@ service VoiceprintExtraction {
   // Performs synchronous voiceprint extraction from an audio. Returns the
   // result after completely sent and processed audio.
   rpc Extract(stream ExtractRequest) returns (ExtractResponse);
+
+  // Performs streaming voiceprint extraction from an audio, continuously
+  // returning updated results as new audio is received. Useful for
+  // real-time applications where speaker changes need to be detected
+  // as they occur.
+  rpc ExtractStream(stream ExtractStreamRequest) returns (stream ExtractStreamResponse);
 }
 
 // Service that implements voiceprint merging.
@@ -94,6 +100,15 @@ message ExtractRequest {
   ExtractConfig config = 2;
 }
 
+// The top-level message sent by the client for the <code>ExtractStream</code> method.
+message ExtractStreamRequest {
+  // Audio to extract the voiceprint from.
+  phonexia.grpc.common.Audio audio = 1;
+
+  // Voiceprint extraction configuration.
+  ExtractStreamConfig config = 2;
+}
+
 message ExtractConfig {
   // Specifies the maximum speech length from which the voiceprint will be
   // extracted. If there is less speech in the audio than the specified
@@ -103,6 +118,37 @@ message ExtractConfig {
   // If set to true, the extraction result will contain both voiceprint
   // and vector_voiceprint fields. If false (default), only voiceprint is returned.
   bool enable_vector_voiceprint = 2;
+}
+
+// Voiceprint extraction configuration for the <code>ExtractStream</code> method.
+message ExtractStreamConfig {
+  // Specifies the length of the rolling window of speech from which the
+  // voiceprint will be extracted. Speech is extracted from the most recent
+  // <code>rolling_speech_length</code> portion of the audio.
+  // This ensures that speaker changes are detected. A longer speech length improves detection accuracy,
+  // but also increases the latency for detecting speaker changes.
+  // If not set, the rolling window is not applied and the voiceprint is
+  // extracted from all speech received so far.
+  // The window holds whole speech_update_interval units of speech, so the
+  // effective minimum is one such interval and the length is rounded up to
+  // a multiple of it. A shorter value is accepted but behaves the same as
+  // one interval.
+  // The maximum is 1 hour; a longer window is rejected, as the memory the
+  // window occupies grows with its length.
+  optional google.protobuf.Duration rolling_speech_length = 1;
+
+  // If set to true, the extraction result will contain both voiceprint
+  // and vector_voiceprint fields. If false (default), only voiceprint is returned.
+  bool enable_vector_voiceprint = 2;
+
+  // Specifies how much speech is accumulated between two emitted results.
+  // A result is emitted once this much speech has been received, so the
+  // cadence of the responses follows the speech in the audio rather than
+  // its total length: a stretch without speech emits no result until the
+  // speech resumes. A shorter interval updates the voiceprint more often
+  // at the cost of more responses and more computation.
+  // If not set, a service specific default is used.
+  optional google.protobuf.Duration speech_update_interval = 3;
 }
 
 // A voiceprint extraction result.
@@ -120,6 +166,21 @@ message ExtractResult {
   phonexia.grpc.common.Vector vector_voiceprint = 3;
 }
 
+// A streaming voiceprint extraction result.
+message ExtractStreamResult {
+  // Speech length from which the voiceprint was extracted.
+  google.protobuf.Duration speech_length = 1;
+
+  // Extracted voiceprint is always included in the result.
+  phonexia.grpc.common.Voiceprint voiceprint = 2;
+
+  // Vector voiceprint optimized for vector databases.
+  // Included only if enable_vector_voiceprint is set to true in ExtractStreamConfig.
+  // Use cosine distance to compare vector voiceprints in vector databases.
+  // Note: Will be empty if the input audio contains no speech.
+  phonexia.grpc.common.Vector vector_voiceprint = 3;
+}
+
 // The top-level message returned to the client by the <code>Extract</code>
 // method. It contains the result as zero or more <code>ExtractResult</code>
 // messages.
@@ -129,6 +190,17 @@ message ExtractResponse {
 
   // When available, total length of the processed audio.
   // Set only if this is the last response in the stream.
+  google.protobuf.Duration processed_audio_length = 2;
+}
+
+// The top-level message returned to the client by the <code>ExtractStream</code>
+// method. The method streams these messages, each containing zero or one
+// <code>ExtractStreamResult</code> message, updated as new audio is processed.
+message ExtractStreamResponse {
+  // Result containing the extracted voiceprint.
+  optional ExtractStreamResult result = 1;
+
+  // Total length of the audio processed so far.
   google.protobuf.Duration processed_audio_length = 2;
 }
 

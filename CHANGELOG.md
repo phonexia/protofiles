@@ -1,5 +1,19 @@
 # Phonexia gRPC application interface
 
+## 2.32.0 (2026-11-10)
+### Added
+- `ExtractStream` streaming RPC to `VoiceprintExtraction` service in
+  `phonexia.grpc.technologies.speaker_identification.v1` for real-time voiceprint extraction, continuously returning
+  updated voiceprints as audio is received
+- Added `ExtractStreamRequest`, `ExtractStreamConfig`, `ExtractStreamResult` and `ExtractStreamResponse` messages
+- `ExtractStreamConfig` supports `rolling_speech_length` (rolling window of speech used for extraction, enabling
+  speaker change detection), `speech_update_interval` (amount of speech between emitted results) and
+  `enable_vector_voiceprint`
+### Changed
+- Raised the minimum supported Python version from 3.9 to 3.11, dropping support for end-of-life versions
+### Removed
+- `TranscriptionNormalization` service in `phonexia.grpc.technologies.transcription_normalization.v1`
+
 ## 2.31.2 (2026-09-14)
 ### Removed
 - `ReferentialDeepfakeDetection` service in `phonexia.grpc.technologies.referential_deepfake_detection.v1`
